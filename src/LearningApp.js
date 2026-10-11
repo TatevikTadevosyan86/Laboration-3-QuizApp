@@ -17,10 +17,10 @@ export class LearningApp {
     <h1>Learn & Play</h1>
     <p>Choose an activity</p>
     <div>
-      <button type="button" disabled>Shapes</button>
-      <button type="button" disabled>Colours</button>
-      <button type="button" id="counting">Counting</button>
-      <button type="button" disabled>Letters</button>
+      <button type="button" class="activity shapes" disabled>Shapes</button>
+<button type="button" class="activity colours" disabled>Colours</button>
+<button type="button" class="activity counting" id="counting">Counting</button>
+<button type="button" class="activity letters" disabled>Letters</button>
     </div>
   `
 
@@ -65,7 +65,7 @@ export class LearningApp {
     button.textContent = option
 
     button.addEventListener('click', () => {
-      this.#submitAnswer(index)
+      this.#submitAnswer(index,button)
     })
 
     answers.append(button)
@@ -75,7 +75,7 @@ export class LearningApp {
     this.#continueQuiz()
   })
 }
-  #submitAnswer(answerIndex) {
+  #submitAnswer(answerIndex, selectedButton) {
   const buttons = this.#root.querySelectorAll('#answers button')
 
   for (const button of buttons) {
@@ -83,25 +83,32 @@ export class LearningApp {
   }
 
   const correct = this.#session.submitAnswer(answerIndex)
+
+  selectedButton.classList.add(correct ? 'correct' : 'incorrect')
+
+  const mark = document.createElement('span')
+  mark.setAttribute('aria-hidden', 'true')
+  mark.textContent = correct ? ' ✓' : ' ✕'
+  selectedButton.append(mark)
+
   const feedback = this.#root.querySelector('#feedback')
 
-const symbol = document.createElement('span')
-symbol.setAttribute('aria-hidden', 'true')
-symbol.style.fontSize = '4rem'
-symbol.style.fontWeight = 'bold'
-symbol.style.display = 'block'
-symbol.style.color = correct ? '#187a36' : '#c62828'
-symbol.textContent = correct ? '😊 ✓' : '🙁 ✕'
+  const face = document.createElement('span')
+  face.className = 'feedback-face'
+  face.setAttribute('aria-hidden', 'true')
+  face.textContent = correct ? '😊' : '🙁'
 
   const message = document.createElement('span')
+  message.className = 'visually-hidden'
   message.textContent = correct
-    ? 'Well done!'
-    : 'Good try! We can practise this again.'
+    ? 'Correct. Well done!'
+    : 'Incorrect. We can practise this again.'
 
-  feedback.replaceChildren(symbol, message)
+  feedback.replaceChildren(face, message)
+
   const nextButton = this.#root.querySelector('#next')
-nextButton.hidden = false
-nextButton.focus()
+  nextButton.hidden = false
+  nextButton.focus()
 }
 #continueQuiz() {
   if (this.#session.isComplete()) {
