@@ -183,3 +183,31 @@ button:disabled {
   white-space: nowrap;
   border: 0;
 }
+
+.activity-picture {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 2rem;
+  line-height: 1.3;
+}
+
+.colour-picture {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.colour-picture i {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #c62828;
+}
+
+.colour-picture i:nth-child(2) {
+  background: #187a36;
+}
+
+.colour-picture i:nth-child(3) {
+  background: #2459bf;
+}

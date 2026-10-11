@@ -17,10 +17,10 @@ export class LearningApp {
     <h1>Learn & Play</h1>
     <p>Choose an activity</p>
     <div>
-      <button type="button" class="activity shapes" disabled>Shapes</button>
-<button type="button" class="activity colours" disabled>Colours</button>
-<button type="button" class="activity counting" id="counting">Counting</button>
-<button type="button" class="activity letters" disabled>Letters</button>
+      <button type="button" class="activity shapes" disabled><span class="activity-picture" aria-hidden="true">● ▲ ■</span><span>Shapes</span></button>
+<button type="button" class="activity colours" disabled><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
+<button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
+<button type="button" class="activity letters" disabled><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
     </div>
   `
 
