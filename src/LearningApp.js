@@ -34,23 +34,45 @@ export class LearningApp {
     this.#showQuestion()
   }
   #showQuestion() {
-    const question = this.#session.getCurrentQuestion()
+  const question = this.#session.getCurrentQuestion()
 
-    this.#root.innerHTML = `
-      <h1>Counting</h1>
-      <h2 id="question"></h2>
-      <p role="img" aria-label="One apple">🍎</p>
-      <div id="answers"></div>
-    `
-     this.#root.querySelector('#question').textContent = question.getText()
+  this.#root.innerHTML = `
+    <h1>Counting</h1>
+    <h2 id="question"></h2>
+    <p role="img" aria-label="One apple">🍎</p>
+    <div id="answers"></div>
+    <p id="feedback" role="status"></p>
+  `
 
-    const answers = this.#root.querySelector('#answers')
+  this.#root.querySelector('#question').textContent = question.getText()
 
-    for (const option of question.getOptions()) {
-      const button = document.createElement('button')
-      button.type = 'button'
-      button.textContent = option
-      answers.append(button)
-    }
+  const answers = this.#root.querySelector('#answers')
+  const options = question.getOptions()
+
+  for (const [index, option] of options.entries()) {
+    const button = document.createElement('button')
+    button.type = 'button'
+    button.textContent = option
+
+    button.addEventListener('click', () => {
+      this.#submitAnswer(index)
+    })
+
+    answers.append(button)
   }
+}
+  #submitAnswer(answerIndex) {
+  const buttons = this.#root.querySelectorAll('#answers button')
+
+  for (const button of buttons) {
+    button.disabled = true
+  }
+
+  const correct = this.#session.submitAnswer(answerIndex)
+  const feedback = this.#root.querySelector('#feedback')
+
+  feedback.textContent = correct
+    ? 'Well done!'
+    : 'Good try! We can practise this again.'
+}
 }
