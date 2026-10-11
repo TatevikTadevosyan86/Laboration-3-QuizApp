@@ -71,8 +71,19 @@ export class LearningApp {
   const correct = this.#session.submitAnswer(answerIndex)
   const feedback = this.#root.querySelector('#feedback')
 
-  feedback.textContent = correct
+  const symbol = document.createElement('span')
+symbol.setAttribute('aria-hidden', 'true')
+symbol.style.fontSize = '4rem'
+symbol.style.fontWeight = 'bold'
+symbol.style.display = 'block'
+symbol.style.color = correct ? '#187a36' : '#c62828'
+symbol.textContent = correct ? '😊 ✓' : '🙁 ✕'
+
+  const message = document.createElement('span')
+  message.textContent = correct
     ? 'Well done!'
     : 'Good try! We can practise this again.'
+
+  feedback.replaceChildren(symbol, message)
 }
 }
