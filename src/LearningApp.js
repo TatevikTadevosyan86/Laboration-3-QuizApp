@@ -62,14 +62,14 @@ export class LearningApp {
     objects.textContent = '🍎 '.repeat(count)
     objects.setAttribute('aria-label', `${count} ${count === 1 ? 'apple' : 'apples'}`)
   } else if (category === 'Shapes') {
-    const shape = this.#questionBank.getShape(question)
+    const pattern = this.#questionBank.getShapePattern(question)
     const shapeNames = {
       '●': 'Circle',
       '▲': 'Triangle',
       '■': 'Square',
     }
-    objects.textContent = shape
-    objects.setAttribute('aria-label', shapeNames[shape])
+    objects.textContent = pattern.join(' ') + ' ?'
+    objects.setAttribute('aria-label', pattern.map(shape => shapeNames[shape]).join(', ') + ', what comes next?')
   }
 
   const answers = this.#root.querySelector('#answers')

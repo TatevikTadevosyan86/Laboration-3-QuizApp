@@ -2,7 +2,7 @@ import { Question, Quiz } from 'quiz-engine'
 
 export class QuestionBank {
   #objectCounts = new WeakMap()
-  #shapes = new WeakMap()
+  #shapePatterns = new WeakMap()
 
   createCountingQuiz() {
     const quiz = new Quiz()
@@ -37,27 +37,27 @@ export class QuestionBank {
   const quiz = new Quiz()
 
   const questions = [
-    { shape: '●', options: ['●', '▲', '■'], correctIndex: 0 },
-    { shape: '▲', options: ['■', '●', '▲'], correctIndex: 2 },
-    { shape: '■', options: ['▲', '■', '●'], correctIndex: 1 },
-    { shape: '●', options: ['■', '●', '▲'], correctIndex: 1 },
-    { shape: '▲', options: ['▲', '■', '●'], correctIndex: 0 },
+    { pattern: ['●', '▲', '●', '▲'], options: ['●', '▲', '■'], correctIndex: 0 },
+    { pattern: ['▲', '■', '▲', '■'], options: ['■', '●', '▲'], correctIndex: 2 },
+    { pattern: ['■', '●', '■', '●'], options: ['▲', '■', '●'], correctIndex: 1 },
+    { pattern: ['●', '■', '●', '■'], options: ['■', '●', '▲'], correctIndex: 1 },
+    { pattern: ['▲', '●', '▲', '●'], options: ['▲', '■', '●'], correctIndex: 0 },
   ]
 
   for (const data of questions) {
     const question = new Question(
-      'Find the matching shape',
+      'Which shape comes next?',
       data.options,
       data.correctIndex,
       'Shapes'
     )
-this.#shapes.set(question, data.shape)
+this.#shapePatterns.set(question, data.pattern)
     quiz.addQuestion(question)
   }
 
   return quiz
 }
-getShape(question) {
-  return this.#shapes.get(question)
+getShapePattern(question) {
+  return this.#shapePatterns.get(question)
 }
 }
