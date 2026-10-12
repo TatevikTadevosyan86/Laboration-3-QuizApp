@@ -17,7 +17,7 @@ export class LearningApp {
     <h1>Learn & Play</h1>
     <p>Choose an activity</p>
     <div>
-      <button type="button" class="activity shapes" disabled><span class="activity-picture" aria-hidden="true">● ▲ ■</span><span>Shapes</span></button>
+      <button type="button" class="activity shapes" id="shapes"><span class="activity-picture" aria-hidden="true">● ▲ ■</span><span>Shapes</span></button>
 <button type="button" class="activity colours" disabled><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
 <button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
 <button type="button" class="activity letters" disabled><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
@@ -27,6 +27,10 @@ export class LearningApp {
   this.#root.querySelector('#counting').addEventListener('click', () => {
     this.#startCounting()
   })
+
+  this.#root.querySelector('#shapes').addEventListener('click', () => {
+    this.#startShapes()
+  })
 }
   #startCounting() {
     const quiz = this.#questionBank.createCountingQuiz()
@@ -35,10 +39,10 @@ export class LearningApp {
   }
   #showQuestion() {
   const question = this.#session.getCurrentQuestion()
-  const count = this.#questionBank.getObjectCount(question)
+  const category = question.getCategory()
 
   this.#root.innerHTML = `
-    <h1>Counting</h1>
+    <h1 id="activity-title"></h1>
     <h2 id="question"></h2>
     <p id="objects" role="img"></p>
     <div id="answers"></div>
@@ -49,13 +53,24 @@ export class LearningApp {
   `
 
   this.#root.querySelector('#question').textContent = question.getText()
+  this.#root.querySelector('#activity-title').textContent = category
 
   const objects = this.#root.querySelector('#objects')
-  objects.textContent = '🍎 '.repeat(count)
-  objects.setAttribute(
-    'aria-label',
-    `${count} ${count === 1 ? 'apple' : 'apples'}`
-  )
+
+  if (category === 'Counting') {
+    const count = this.#questionBank.getObjectCount(question)
+    objects.textContent = '🍎 '.repeat(count)
+    objects.setAttribute('aria-label', `${count} ${count === 1 ? 'apple' : 'apples'}`)
+  } else if (category === 'Shapes') {
+    const shape = this.#questionBank.getShape(question)
+    const shapeNames = {
+      '●': 'Circle',
+      '▲': 'Triangle',
+      '■': 'Square',
+    }
+    objects.textContent = shape
+    objects.setAttribute('aria-label', shapeNames[shape])
+  }
 
   const answers = this.#root.querySelector('#answers')
 
@@ -116,6 +131,11 @@ export class LearningApp {
     return
   }
 
+  this.#showQuestion()
+}
+#startShapes() {
+  const quiz = this.#questionBank.createShapesQuiz()
+  this.#session = new QuizSession(quiz)
   this.#showQuestion()
 }
 
