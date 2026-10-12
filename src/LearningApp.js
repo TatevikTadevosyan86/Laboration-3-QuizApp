@@ -17,7 +17,7 @@ export class LearningApp {
     <h1>Learn & Play</h1>
     <p>Choose an activity</p>
     <div>
-      <button type="button" class="activity shapes" id="shapes"><span class="activity-picture" aria-hidden="true">● ▲ ■</span><span>Shapes</span></button>
+      <button type="button" class="activity shapes" id="shapes"><span class="activity-picture" aria-hidden="true"><span class="shape-symbol shape-circle">●</span> <span class="shape-symbol shape-triangle">▲</span> <span class="shape-symbol shape-square">■</span></span><span>Shapes</span></button>
 <button type="button" class="activity colours" disabled><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
 <button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
 <button type="button" class="activity letters" disabled><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
@@ -68,7 +68,12 @@ export class LearningApp {
       '▲': 'Triangle',
       '■': 'Square',
     }
-    objects.textContent = pattern.join(' ') + ' ?'
+    for (const shape of pattern) {
+      objects.append(this.#createShapeSymbol(shape))
+    }
+    const missing = document.createElement('span')
+    missing.textContent = '?'
+    objects.append(missing)
     objects.setAttribute('aria-label', pattern.map(shape => shapeNames[shape]).join(', ') + ', what comes next?')
   }
 
@@ -77,7 +82,13 @@ export class LearningApp {
   for (const [index, option] of question.getOptions().entries()) {
     const button = document.createElement('button')
     button.type = 'button'
-    button.textContent = option
+    if (category === 'Shapes') {
+      button.append(this.#createShapeSymbol(option))
+      const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
+      button.setAttribute('aria-label', names[option])
+    } else {
+      button.textContent = option
+    }
 
     button.addEventListener('click', () => {
       this.#submitAnswer(index,button)
@@ -90,6 +101,18 @@ export class LearningApp {
     this.#continueQuiz()
   })
 }
+  #createShapeSymbol(shape) {
+    const classes = {
+      '●': 'shape-circle',
+      '▲': 'shape-triangle',
+      '■': 'shape-square',
+    }
+    const symbol = document.createElement('span')
+    symbol.className = `shape-symbol ${classes[shape]}`
+    symbol.textContent = shape
+    symbol.setAttribute('aria-hidden', 'true')
+    return symbol
+  }
   #submitAnswer(answerIndex, selectedButton) {
   const buttons = this.#root.querySelectorAll('#answers button')
 

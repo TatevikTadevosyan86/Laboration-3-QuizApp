@@ -211,3 +211,21 @@ button:disabled {
 .colour-picture i:nth-child(3) {
   background: #2459bf;
 }
+.shape-symbol {
+  display: inline-block;
+  padding: 0 0.12em;
+  border-radius: 8px;
+  line-height: 1.25;
+}
+
+.shape-circle {
+  color: #db4b39;
+}
+
+.shape-triangle {
+  color: #2459bf;
+}
+
+.shape-square {
+  color: #8c3db5;
+}
