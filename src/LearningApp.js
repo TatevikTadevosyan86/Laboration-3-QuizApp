@@ -160,7 +160,15 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     button.disabled = true
   }
 
-  const correct = this.#session.submitAnswer(answerIndex)
+ const question = this.#session.getCurrentQuestion()
+const correct = this.#session.submitAnswer(answerIndex)
+
+if (question.getCategory() === 'Letters') {
+  const data = this.#questionBank.getLetterPicture(question)
+  const word = this.#root.querySelector('#letter-word')
+
+  word.textContent = data.word
+}
 
   selectedButton.classList.add(correct ? 'correct' : 'incorrect')
 
