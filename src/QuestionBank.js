@@ -3,6 +3,7 @@ import { Question, Quiz } from 'quiz-engine'
 export class QuestionBank {
   #objectCounts = new WeakMap()
   #shapePatterns = new WeakMap()
+  #colours = new WeakMap()
 
   createCountingQuiz() {
     const quiz = new Quiz()
@@ -59,5 +60,54 @@ this.#shapePatterns.set(question, data.pattern)
 }
 getShapePattern(question) {
   return this.#shapePatterns.get(question)
+}
+createColoursQuiz() {
+  const quiz = new Quiz()
+
+  const questions = [
+    {
+      colour: 'Red',
+      options: ['Red', 'Blue', 'Yellow'],
+      correctIndex: 0,
+    },
+    {
+      colour: 'Blue',
+      options: ['Green', 'Yellow', 'Blue'],
+      correctIndex: 2,
+    },
+    {
+      colour: 'Yellow',
+      options: ['Red', 'Yellow', 'Green'],
+      correctIndex: 1,
+    },
+    {
+      colour: 'Green',
+      options: ['Green', 'Blue', 'Red'],
+      correctIndex: 0,
+    },
+    {
+      colour: 'Purple',
+      options: ['Yellow', 'Purple', 'Blue'],
+      correctIndex: 1,
+    },
+  ]
+
+  for (const data of questions) {
+    const question = new Question(
+      'Find the matching colour',
+      data.options,
+      data.correctIndex,
+      'Colours'
+    )
+
+    this.#colours.set(question, data.colour)
+    quiz.addQuestion(question)
+  }
+
+  return quiz
+}
+
+getColour(question) {
+  return this.#colours.get(question)
 }
 }
