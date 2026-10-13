@@ -38,6 +38,7 @@ export class LearningApp {
 this.#root.querySelector('#letters').addEventListener('click', () => {
   this.#startLetters()  
 })
+}
 #startLetters() {
   const quiz = this.#questionBank.createLettersQuiz()
   this.#session = new QuizSession(quiz)
@@ -83,6 +84,13 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
       objects.setAttribute('aria-label', pattern.map(shape => names[shape]).join(', ') + ', what comes next?')
     } else if (category === 'Colours') {
       objects.hidden = true
+    } else if (category === 'Letters') {
+      const data = this.#questionBank.getLetterPicture(question)
+      objects.textContent = data.picture
+      objects.setAttribute('aria-label', data.word)
+      const word = this.#root.querySelector('#letter-word')
+      word.hidden = false
+      word.textContent = '_' + data.word.slice(1)
     }
 
     const answers = this.#root.querySelector('#answers')
@@ -97,16 +105,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
         button.append(this.#createColourCircle(option))
         button.setAttribute('aria-label', option + ' circle ' + (index + 1))
         button.setAttribute('aria-pressed', 'false')
-      }else if (category === 'Letters') {
-  const data = this.#questionBank.getLetterPicture(question)
-
-  objects.textContent = data.picture
-  objects.setAttribute('aria-label', data.word)
-
-  const word = this.#root.querySelector('#letter-word')
-  word.hidden = false
-  word.textContent = '_' + data.word.slice(1)
-} else {
+      } else {
         button.textContent = option
       }
       button.addEventListener('click', () => {
