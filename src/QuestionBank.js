@@ -4,6 +4,7 @@ export class QuestionBank {
   #objectCounts = new WeakMap()
   #shapePatterns = new WeakMap()
   #colours = new WeakMap()
+  #letterPictures = new WeakMap()
 
   createCountingQuiz() {
     const quiz = new Quiz()
@@ -91,5 +92,61 @@ getColour(question) {
 
 getColourDots(question) {
   return [...this.#colours.get(question).dots]
+}
+createLettersQuiz() {
+  const quiz = new Quiz()
+
+  const questions = [
+    {
+      picture: '☀️',
+      word: 'sun',
+      options: ['S', 'B', 'C'],
+    },
+    {
+      picture: '🐱',
+      word: 'cat',
+      options: ['D', 'C', 'B'],
+    },
+    {
+      picture: '🐶',
+      word: 'dog',
+      options: ['B', 'S', 'D'],
+    },
+    {
+      picture: '🚌',
+      word: 'bus',
+      options: ['B', 'C', 'S'],
+    },
+    {
+      picture: '🐟',
+      word: 'fish',
+      options: ['S', 'F', 'D'],
+    },
+  ]
+
+  for (const data of questions) {
+    const firstLetter = data.word[0].toUpperCase()
+    const correctIndex = data.options.indexOf(firstLetter)
+
+    const question = new Question(
+      'Choose the missing first letter',
+      data.options,
+      correctIndex,
+      'Letters'
+    )
+
+    this.#letterPictures.set(question, {
+      picture: data.picture,
+      word: data.word,
+    })
+
+    quiz.addQuestion(question)
+  }
+
+  return quiz
+}
+
+getLetterPicture(question) {
+  return { ...this.#letterPictures.get(question) }
 }
 }
