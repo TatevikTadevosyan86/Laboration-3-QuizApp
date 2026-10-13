@@ -1,4 +1,4 @@
-import { Question, Quiz } from 'quiz-engine'
+import { Question, MultipleChoiceQuestion, Quiz } from 'quiz-engine'
 
 export class QuestionBank {
   #objectCounts = new WeakMap()
@@ -63,51 +63,33 @@ getShapePattern(question) {
 }
 createColoursQuiz() {
   const quiz = new Quiz()
-
   const questions = [
-    {
-      colour: 'Red',
-      options: ['Red', 'Blue', 'Yellow'],
-      correctIndex: 0,
-    },
-    {
-      colour: 'Blue',
-      options: ['Green', 'Yellow', 'Blue'],
-      correctIndex: 2,
-    },
-    {
-      colour: 'Yellow',
-      options: ['Red', 'Yellow', 'Green'],
-      correctIndex: 1,
-    },
-    {
-      colour: 'Green',
-      options: ['Green', 'Blue', 'Red'],
-      correctIndex: 0,
-    },
-    {
-      colour: 'Purple',
-      options: ['Yellow', 'Purple', 'Blue'],
-      correctIndex: 1,
-    },
+    { colour: 'Red', dots: ['Red', 'Blue', 'Red'] },
+    { colour: 'Blue', dots: ['Yellow', 'Blue', 'Green', 'Blue'] },
+    { colour: 'Yellow', dots: ['Yellow', 'Red', 'Yellow', 'Blue', 'Yellow'] },
+    { colour: 'Green', dots: ['Red', 'Green', 'Blue', 'Yellow'] },
+    { colour: 'Purple', dots: ['Purple', 'Blue', 'Purple', 'Yellow', 'Purple'] },
   ]
 
   for (const data of questions) {
-    const question = new Question(
-      'Find the matching colour',
-      data.options,
-      data.correctIndex,
+    const indexes = data.dots.flatMap((colour, index) => colour === data.colour ? [index] : [])
+    const question = new MultipleChoiceQuestion(
+      `Tap all the ${data.colour.toLowerCase()} circles`,
+      data.dots,
+      indexes,
       'Colours'
     )
-
-    this.#colours.set(question, data.colour)
+    this.#colours.set(question, data)
     quiz.addQuestion(question)
   }
-
   return quiz
 }
 
 getColour(question) {
-  return this.#colours.get(question)
+  return this.#colours.get(question).colour
+}
+
+getColourDots(question) {
+  return [...this.#colours.get(question).dots]
 }
 }

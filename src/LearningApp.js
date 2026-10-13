@@ -4,6 +4,7 @@ import { QuestionBank } from './QuestionBank.js'
 export class LearningApp {
   #root
   #questionBank = new QuestionBank()
+  #selectedAnswers = new Set()
   #session
 
   constructor(root) {
@@ -41,86 +42,89 @@ export class LearningApp {
     this.#showQuestion()
   }
   #showQuestion() {
-  const question = this.#session.getCurrentQuestion()
-  const category = question.getCategory()
+    const question = this.#session.getCurrentQuestion()
+    const category = question.getCategory()
+    this.#selectedAnswers.clear()
 
-  this.#root.innerHTML = `
-    <h1 id="activity-title"></h1>
-    <h2 id="question"></h2>
-    <p id="objects" role="img"></p>
-    <div id="answers"></div>
-    <p id="feedback" role="status"></p>
-    <button type="button" id="next" aria-label="Continue" hidden>
-      ➜
-    </button>
-  `
+    this.#root.innerHTML = `
+      <h1 id="activity-title"></h1>
+      <h2 id="question"></h2>
+      <button type="button" id="check" aria-label="Check selected circles" hidden disabled>✓ Check</button>
+      <p id="objects" role="img"></p>
+      <div id="answers"></div>
+      <p id="feedback" role="status"></p>
+      <button type="button" id="next" aria-label="Continue" hidden>➜</button>
+    `
+    this.#root.querySelector('#question').textContent = question.getText()
+    this.#root.querySelector('#activity-title').textContent = category
+    const objects = this.#root.querySelector('#objects')
 
-  this.#root.querySelector('#question').textContent = question.getText()
-  this.#root.querySelector('#activity-title').textContent = category
-
-  const objects = this.#root.querySelector('#objects')
-
-  if (category === 'Counting') {
-    const count = this.#questionBank.getObjectCount(question)
-    objects.textContent = '🍎 '.repeat(count)
-    objects.setAttribute('aria-label', `${count} ${count === 1 ? 'apple' : 'apples'}`)
-  } else if (category === 'Shapes') {
-    const pattern = this.#questionBank.getShapePattern(question)
-    const shapeNames = {
-      '●': 'Circle',
-      '▲': 'Triangle',
-      '■': 'Square',
-    }
-    for (const shape of pattern) {
-      objects.append(this.#createShapeSymbol(shape))
-    }
-    const missing = document.createElement('span')
-    missing.textContent = '?'
-    objects.append(missing)
-    objects.setAttribute('aria-label', pattern.map(shape => shapeNames[shape]).join(', ') + ', what comes next?')
-  }
-
-  const answers = this.#root.querySelector('#answers')
-
-  for (const [index, option] of question.getOptions().entries()) {
-    const button = document.createElement('button')
-    button.type = 'button'
-    if (category === 'Shapes') {
-      button.append(this.#createShapeSymbol(option))
+    if (category === 'Counting') {
+      const count = this.#questionBank.getObjectCount(question)
+      objects.textContent = '🍎 '.repeat(count)
+      objects.setAttribute('aria-label', `${count} ${count === 1 ? 'apple' : 'apples'}`)
+    } else if (category === 'Shapes') {
+      const pattern = this.#questionBank.getShapePattern(question)
       const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
-      button.setAttribute('aria-label', names[option])
-    } if (category === 'Shapes') {
-  button.append(this.#createShapeSymbol(option))
+      for (const shape of pattern) {
+        objects.append(this.#createShapeSymbol(shape))
+      }
+      const missing = document.createElement('span')
+      missing.textContent = '?'
+      objects.append(missing)
+      objects.setAttribute('aria-label', pattern.map(shape => names[shape]).join(', ') + ', what comes next?')
+    } else if (category === 'Colours') {
+      objects.hidden = true
+    }
 
-  const names = {
-    '●': 'Circle',
-    '▲': 'Triangle',
-    '■': 'Square',
-  }
-
-  button.setAttribute('aria-label', names[option])
-} else if (category === 'Colours') {
-  button.append(this.#createColourCircle(option))
-  button.setAttribute('aria-label', option)
-} 
-      else if (category === 'Colours') {
-  const colour = this.#questionBank.getColour(question)
-
-  objects.append(this.#createColourCircle(colour))
-  objects.setAttribute('aria-label', `${colour} colour`)
-}
-
-    button.addEventListener('click', () => {
-      this.#submitAnswer(index,button)
+    const answers = this.#root.querySelector('#answers')
+    for (const [index, option] of question.getOptions().entries()) {
+      const button = document.createElement('button')
+      button.type = 'button'
+      if (category === 'Shapes') {
+        button.append(this.#createShapeSymbol(option))
+        const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
+        button.setAttribute('aria-label', names[option])
+      } else if (category === 'Colours') {
+        button.append(this.#createColourCircle(option))
+        button.setAttribute('aria-label', option + ' circle ' + (index + 1))
+        button.setAttribute('aria-pressed', 'false')
+      } else {
+        button.textContent = option
+      }
+      button.addEventListener('click', () => {
+        if (category === 'Colours') {
+          this.#toggleColour(index, button)
+        } else {
+          this.#submitAnswer(index, button)
+        }
+      })
+      answers.append(button)
+    }
+    const check = this.#root.querySelector('#check')
+    if (category === 'Colours') {
+      check.hidden = false
+      answers.after(check)
+      check.addEventListener('click', () => {
+        check.disabled = true
+        this.#submitAnswer([...this.#selectedAnswers], check)
+      })
+    }
+    this.#root.querySelector('#next').addEventListener('click', () => {
+      this.#continueQuiz()
     })
-
-    answers.append(button)
   }
-
-  this.#root.querySelector('#next').addEventListener('click', () => {
-    this.#continueQuiz()
-  })
-}
+  #toggleColour(index, button) {
+    if (this.#selectedAnswers.has(index)) {
+      this.#selectedAnswers.delete(index)
+    } else {
+      this.#selectedAnswers.add(index)
+    }
+    const selected = this.#selectedAnswers.has(index)
+    button.classList.toggle('selected', selected)
+    button.setAttribute('aria-pressed', String(selected))
+    this.#root.querySelector('#check').disabled = this.#selectedAnswers.size === 0
+  }
   #createShapeSymbol(shape) {
     const classes = {
       '●': 'shape-circle',

@@ -262,3 +262,28 @@ button:disabled {
 .colour-purple {
   background: #8c3db5;
 }
+#colour-target:not([hidden]) {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+
+#objects.colour-dots .colour-circle {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+}
+#answers button.selected {
+  outline: 4px solid #24324a;
+  outline-offset: 3px;
+  background: #dcd5ff;
+}
+#answers button.selected::after {
+  content: '●';
+  display: block;
+  font-size: 0.75rem;
+}
+
+#check.correct { background: #187a36; color: white; }
+#check.incorrect { background: #c62828; color: white; }
