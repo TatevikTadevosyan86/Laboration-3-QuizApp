@@ -21,7 +21,7 @@ export class LearningApp {
       <button type="button" class="activity shapes" id="shapes"><span class="activity-picture" aria-hidden="true"><span class="shape-symbol shape-circle">●</span> <span class="shape-symbol shape-triangle">▲</span> <span class="shape-symbol shape-square">■</span></span><span>Shapes</span></button>
 <button type="button" class="activity colours" id="colours"><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
 <button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
-<button type="button" class="activity letters" disabled><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
+<button type="button" class="activity letters"  id="letters"><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
     </div>
   `
 
@@ -35,6 +35,13 @@ export class LearningApp {
   this.#root.querySelector('#colours').addEventListener('click', () => {
   this.#startColours()
 })
+this.#root.querySelector('#letters').addEventListener('click', () => {
+  this.#startLetters()  
+})
+#startLetters() {
+  const quiz = this.#questionBank.createLettersQuiz()
+  this.#session = new QuizSession(quiz)
+  this.#showQuestion()
 }
   #startCounting() {
     const quiz = this.#questionBank.createCountingQuiz()
@@ -51,6 +58,7 @@ export class LearningApp {
       <h2 id="question"></h2>
       <button type="button" id="check" aria-label="Check selected circles" hidden disabled>✓ Check</button>
       <p id="objects" role="img"></p>
+      <p id="letter-word" hidden></p>
       <div id="answers"></div>
       <p id="feedback" role="status"></p>
       <button type="button" id="next" aria-label="Continue" hidden>➜</button>
@@ -89,7 +97,16 @@ export class LearningApp {
         button.append(this.#createColourCircle(option))
         button.setAttribute('aria-label', option + ' circle ' + (index + 1))
         button.setAttribute('aria-pressed', 'false')
-      } else {
+      }else if (category === 'Letters') {
+  const data = this.#questionBank.getLetterPicture(question)
+
+  objects.textContent = data.picture
+  objects.setAttribute('aria-label', data.word)
+
+  const word = this.#root.querySelector('#letter-word')
+  word.hidden = false
+  word.textContent = '_' + data.word.slice(1)
+} else {
         button.textContent = option
       }
       button.addEventListener('click', () => {
