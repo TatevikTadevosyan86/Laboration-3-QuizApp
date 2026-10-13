@@ -229,3 +229,36 @@ button:disabled {
 .shape-square {
   color: #8c3db5;
 }
+.colour-circle {
+  display: inline-block;
+  width: 48px;
+  height: 48px;
+  border: 2px solid #24324a;
+  border-radius: 50%;
+  vertical-align: middle;
+}
+
+#objects .colour-circle {
+  width: 100px;
+  height: 100px;
+}
+
+.colour-red {
+  background: #e53935;
+}
+
+.colour-blue {
+  background: #2459bf;
+}
+
+.colour-yellow {
+  background: #ffd43b;
+}
+
+.colour-green {
+  background: #249447;
+}
+
+.colour-purple {
+  background: #8c3db5;
+}

@@ -18,7 +18,7 @@ export class LearningApp {
     <p>Choose an activity</p>
     <div>
       <button type="button" class="activity shapes" id="shapes"><span class="activity-picture" aria-hidden="true"><span class="shape-symbol shape-circle">●</span> <span class="shape-symbol shape-triangle">▲</span> <span class="shape-symbol shape-square">■</span></span><span>Shapes</span></button>
-<button type="button" class="activity colours" disabled><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
+<button type="button" class="activity colours" id="colours"><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
 <button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
 <button type="button" class="activity letters" disabled><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
     </div>
@@ -31,6 +31,9 @@ export class LearningApp {
   this.#root.querySelector('#shapes').addEventListener('click', () => {
     this.#startShapes()
   })
+  this.#root.querySelector('#colours').addEventListener('click', () => {
+  this.#startColours()
+})
 }
   #startCounting() {
     const quiz = this.#questionBank.createCountingQuiz()
@@ -86,9 +89,26 @@ export class LearningApp {
       button.append(this.#createShapeSymbol(option))
       const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
       button.setAttribute('aria-label', names[option])
-    } else {
-      button.textContent = option
-    }
+    } if (category === 'Shapes') {
+  button.append(this.#createShapeSymbol(option))
+
+  const names = {
+    '●': 'Circle',
+    '▲': 'Triangle',
+    '■': 'Square',
+  }
+
+  button.setAttribute('aria-label', names[option])
+} else if (category === 'Colours') {
+  button.append(this.#createColourCircle(option))
+  button.setAttribute('aria-label', option)
+} 
+      else if (category === 'Colours') {
+  const colour = this.#questionBank.getColour(question)
+
+  objects.append(this.#createColourCircle(colour))
+  objects.setAttribute('aria-label', `${colour} colour`)
+}
 
     button.addEventListener('click', () => {
       this.#submitAnswer(index,button)
@@ -192,5 +212,16 @@ export class LearningApp {
   this.#root.querySelector('#menu').addEventListener('click', () => {
     this.#showMenu()
   })
+}
+#startColours() {
+  const quiz = this.#questionBank.createColoursQuiz()
+  this.#session = new QuizSession(quiz)
+  this.#showQuestion()
+}
+#createColourCircle(colour) {
+  const circle = document.createElement('span')
+  circle.className = `colour-circle colour-${colour.toLowerCase()}`
+  circle.setAttribute('aria-hidden', 'true')
+  return circle
 }
 }
