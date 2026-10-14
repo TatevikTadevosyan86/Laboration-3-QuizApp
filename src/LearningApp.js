@@ -9,6 +9,7 @@ export class LearningApp {
   #selectedAnswers = new Set()
   #session
   #nameValidator = new PlayerNameValidator()
+  #playerStorage = new PlayerStorage()
   #player = {
   nickname: 'Little Explorer',
   avatar: '🐱',
@@ -26,7 +27,7 @@ start() {
 
   this.#showPlayerSetup()
 }
-}
+
 #showPlayerSetup() {
   this.#root.innerHTML = `
     <h1>Learn & Play</h1>
