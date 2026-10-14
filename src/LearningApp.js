@@ -1,21 +1,107 @@
 import { QuizSession } from 'quiz-engine'
 import { QuestionBank } from './QuestionBank.js'
+import { PlayerNameValidator } from './PlayerNameValidator.js'
 
 export class LearningApp {
   #root
   #questionBank = new QuestionBank()
   #selectedAnswers = new Set()
   #session
+  #nameValidator = new PlayerNameValidator()
+#player = { nickname: 'Little Explorer', avatar: '🐱' }
 
   constructor(root) {
     this.#root = root;
   }
-  start() {
-    this.#showMenu();
+ start() {
+  this.#showPlayerSetup()
+}
+#showPlayerSetup() {
+  this.#root.innerHTML = `
+    <h1>Learn & Play</h1>
+    <form id="player-form" novalidate>
+      <label for="nickname">Nickname — optional</label>
+      <input
+        id="nickname"
+        name="nickname"
+        type="text"
+        aria-describedby="name-error"
+      >
+
+      <fieldset>
+        <legend>Choose your animal</legend>
+        <div id="avatars"></div>
+      </fieldset>
+
+      <p id="name-error" role="alert"></p>
+      <button type="submit">▶ Play</button>
+    </form>
+  `
+
+  this.#root.querySelector('#nickname').value = this.#player.nickname
+
+  const avatars = [
+    { symbol: '🐱', name: 'Cat' },
+    { symbol: '🐶', name: 'Dog' },
+    { symbol: '🐰', name: 'Rabbit' },
+    { symbol: '🦊', name: 'Fox' },
+    { symbol: '🐼', name: 'Panda' },
+    { symbol: '🐸', name: 'Frog' },
+  ]
+
+  const container = this.#root.querySelector('#avatars')
+
+  for (const avatar of avatars) {
+    const label = document.createElement('label')
+    label.className = 'avatar-choice'
+
+    const radio = document.createElement('input')
+    radio.type = 'radio'
+    radio.name = 'avatar'
+    radio.value = avatar.symbol
+    radio.checked = avatar.symbol === this.#player.avatar
+    radio.setAttribute('aria-label', avatar.name)
+
+    const picture = document.createElement('span')
+    picture.textContent = avatar.symbol
+    picture.setAttribute('aria-hidden', 'true')
+
+    label.append(radio, picture)
+    container.append(label)
   }
+
+  this.#root.querySelector('#player-form').addEventListener('submit', event => {
+    event.preventDefault()
+    this.#startWithPlayer()
+  })
+}
+#startWithPlayer() {
+  const input = this.#root.querySelector('#nickname')
+  const result = this.#nameValidator.validate(input.value)
+
+  input.setAttribute('aria-invalid', String(!result.valid))
+
+  if (!result.valid) {
+    this.#root.querySelector('#name-error').textContent =
+      result.errors.join(' ')
+
+    input.focus()
+    return
+  }
+
+  const avatar = this.#root.querySelector('input[name="avatar"]:checked')
+
+  this.#player = {
+    nickname: result.nickname,
+    avatar: avatar.value,
+  }
+
+  this.#showMenu()
+}
   #showMenu() {
   this.#root.innerHTML = `
     <h1>Learn & Play</h1>
+    <p id="player-greeting"></p>
     <p>Choose an activity</p>
     <div>
       <button type="button" class="activity shapes" id="shapes"><span class="activity-picture" aria-hidden="true"><span class="shape-symbol shape-circle">●</span> <span class="shape-symbol shape-triangle">▲</span> <span class="shape-symbol shape-square">■</span></span><span>Shapes</span></button>
@@ -24,7 +110,8 @@ export class LearningApp {
 <button type="button" class="activity letters"  id="letters"><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
     </div>
   `
-
+ this.#root.querySelector('#player-greeting').textContent =
+  `${this.#player.avatar} Hello, ${this.#player.nickname}!`
   this.#root.querySelector('#counting').addEventListener('click', () => {
     this.#startCounting()
   })
