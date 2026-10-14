@@ -1,6 +1,7 @@
 import { QuizSession } from 'quiz-engine'
 import { QuestionBank } from './QuestionBank.js'
 import { PlayerNameValidator } from './PlayerNameValidator.js'
+import { PlayerStorage } from './PlayerStorage.js'
 
 export class LearningApp {
   #root
@@ -16,8 +17,15 @@ export class LearningApp {
   constructor(root) {
     this.#root = root;
   }
- start() {
+start() {
+  const savedPlayer = this.#playerStorage.load()
+
+  if (savedPlayer) {
+    this.#player = savedPlayer
+  }
+
   this.#showPlayerSetup()
+}
 }
 #showPlayerSetup() {
   this.#root.innerHTML = `
@@ -100,7 +108,7 @@ export class LearningApp {
     nickname: result.nickname,
     avatar: avatar.value,
   }
-
+this.#playerStorage.save(this.#player)
   this.#showMenu()
 }
   #showMenu() {
