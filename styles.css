@@ -341,3 +341,6 @@ legend {
 #name-error {
   color: #a31e1e;
 }
+#nickname:focus::placeholder {
+  color: transparent;
+}

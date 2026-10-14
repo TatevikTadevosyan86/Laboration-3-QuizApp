@@ -8,7 +8,10 @@ export class LearningApp {
   #selectedAnswers = new Set()
   #session
   #nameValidator = new PlayerNameValidator()
-#player = { nickname: 'Little Explorer', avatar: '🐱' }
+  #player = {
+  nickname: 'Little Explorer',
+  avatar: '🐱',
+}
 
   constructor(root) {
     this.#root = root;
@@ -20,11 +23,12 @@ export class LearningApp {
   this.#root.innerHTML = `
     <h1>Learn & Play</h1>
     <form id="player-form" novalidate>
-      <label for="nickname">Nickname — optional</label>
+      <label for="nickname">Nickname</label>
       <input
         id="nickname"
         name="nickname"
         type="text"
+        placeholder="Little Explorer"
         aria-describedby="name-error"
       >
 
@@ -38,7 +42,8 @@ export class LearningApp {
     </form>
   `
 
-  this.#root.querySelector('#nickname').value = this.#player.nickname
+  this.#root.querySelector('#nickname').value =
+    this.#player.nickname === 'Little Explorer' ? '' : this.#player.nickname
 
   const avatars = [
     { symbol: '🐱', name: 'Cat' },
