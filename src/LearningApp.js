@@ -2,6 +2,7 @@ import { QuizSession } from 'quiz-engine'
 import { QuestionBank } from './QuestionBank.js'
 import { PlayerNameValidator } from './PlayerNameValidator.js'
 import { PlayerStorage } from './PlayerStorage.js'
+import { ScoreStorage } from './ScoreStorage.js'
 
 export class LearningApp {
   #root
@@ -14,6 +15,9 @@ export class LearningApp {
   nickname: 'Little Explorer',
   avatar: '🐱',
 }
+#scoreStorage = new ScoreStorage()
+#activity
+#isPractice = false
 
   constructor(root) {
     this.#root = root;
@@ -122,8 +126,24 @@ this.#playerStorage.save(this.#player)
 <button type="button" class="activity colours" id="colours"><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
 <button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
 <button type="button" class="activity letters"  id="letters"><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
-    </div>
+    <section aria-labelledby="progress-heading">
+  <h2 id="progress-heading">Your progress ⭐</h2>
+  <ul id="score-summary"></ul>
+</section>
+</div>
   `
+  const summary = this.#root.querySelector('#score-summary')
+
+for (const activity of ['Counting', 'Shapes', 'Colours', 'Letters']) {
+  const score = this.#scoreStorage.getActivityScore(activity)
+  const item = document.createElement('li')
+
+  item.textContent = score.rounds === 0
+    ? `${activity}: ready to explore!`
+    : `${activity}: best ${score.best}/5 · latest ${score.latest}/5 · rounds ${score.rounds}`
+
+  summary.append(item)
+}
  this.#root.querySelector('#player-greeting').textContent =
   `${this.#player.avatar} Hello, ${this.#player.nickname}!`
   this.#root.querySelector('#counting').addEventListener('click', () => {
@@ -144,11 +164,16 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
   const quiz = this.#questionBank.createLettersQuiz()
   this.#session = new QuizSession(quiz)
   this.#showQuestion()
+  this.#activity = 'Shapes'
+this.#isPractice = false
 }
   #startCounting() {
     const quiz = this.#questionBank.createCountingQuiz()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
+  
+this.#activity = 'Counting'
+this.#isPractice = false
   }
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
@@ -309,16 +334,27 @@ if (question.getCategory() === 'Letters') {
   const quiz = this.#questionBank.createShapesQuiz()
   this.#session = new QuizSession(quiz)
   this.#showQuestion()
+  this.#activity = 'Shapes'
+this.#isPractice = false
 }
 
 #showResults() {
   const results = this.#session.getResults()
+  let scoreSaved = true
+
+if (!this.#isPractice) {
+  scoreSaved = this.#scoreStorage.recordResult(
+    this.#activity,
+    results.score
+  )
+}
   const retryQuiz = this.#session.createRetryQuiz()
   const hasMistakes = retryQuiz.getQuestionCount() > 0
 
   this.#root.innerHTML = `
     <h1>Round complete! 🌟</h1>
     <p id="result"></p>
+    <p id="save-message" role="status"></p>
     <button type="button" id="retry" hidden>
       🔄 Practise again
     </button>
@@ -326,7 +362,10 @@ if (question.getCategory() === 'Letters') {
       🏠 Back to activities
     </button>
   `
-
+if (!scoreSaved) {
+  this.#root.querySelector('#save-message').textContent =
+    'Your score could not be saved on this device.'
+}
   this.#root.querySelector('#result').textContent =
     `${results.score} / ${results.maxScore}`
 
@@ -334,6 +373,7 @@ if (question.getCategory() === 'Letters') {
   retryButton.hidden = !hasMistakes
 
   retryButton.addEventListener('click', () => {
+    this.#isPractice = true
     this.#session = new QuizSession(retryQuiz)
     this.#showQuestion()
   })
@@ -346,6 +386,8 @@ if (question.getCategory() === 'Letters') {
   const quiz = this.#questionBank.createColoursQuiz()
   this.#session = new QuizSession(quiz)
   this.#showQuestion()
+  this.#activity = 'Shapes'
+this.#isPractice = false
 }
 #createColourCircle(colour) {
   const circle = document.createElement('span')
