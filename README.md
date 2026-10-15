@@ -1,46 +1,115 @@
 # Learn & Play
 
+Learn & Play helps children aged 3–5 practise counting, shape patterns,
+colour recognition, and initial letters through short visual quizzes.
+It supports one child at a time, independently or with an adult.
+Spoken instructions let children hear what to do without reading the prompts.
 
 ## Play online
 
 [Open Learn & Play](https://tateviktadevosyan86.github.io/Laboration-3-QuizApp/)
 
-Enter an optional nickname, choose an avatar, and select an activity:
+1. Enter an optional nickname and choose an animal avatar.
+2. Press Play and choose an activity.
+3. Press the speaker button to hear the current instruction.
+4. Answer, view the feedback, and press the arrow to continue.
+5. At the end, view the result, practise missed questions, or return to activities.
 
-- Counting: count apples and choose the matching number.
-- Shapes: choose the next shape in a pattern.
-- Colours: select all circles of the named colour, then press Check.
-- Letters: use a picture to choose a word’s missing first letter.
+An empty nickname uses **Little Explorer**. Entered nicknames must contain
+2–20 characters after surrounding spaces are removed.
 
-Press the speaker button to hear an instruction.
-After a round, view your result or practise missed questions.
+## Activities
+
+| Activity | What the child does |
+| --- | --- |
+| Counting | Counts one to five apples and chooses a number. |
+| Shapes | Chooses the next shape in an alternating pattern. |
+| Colours | Selects all circles of the named colour, then presses Check. Tapping a circle again deselects it. |
+| Letters | Uses a picture to choose a word's missing first letter, such as S for sun. The complete word appears after answering. |
+
+Each full round contains five questions. Progress dots fill as questions
+are answered. Green/red feedback and faces indicate correct/incorrect
+answers. There is no timer. English instructions are provided as local
+WAV recordings generated with the Windows Microsoft Zira voice.
+
+## Results and saved progress
+
+The results screen shows earned points and available points for the round,
+plus the activity's best full-round score and completed full-round count.
+The app stores the latest full-round score as well.
+
+Practice contains only incorrectly answered questions. It starts a fresh
+session and does not change saved full-round scores or completion counts.
+
+The nickname, avatar, and score summaries are saved in `localStorage`.
+There is one profile per browser: changing the nickname or avatar does not
+create a separate score history. Data does not sync between devices, and
+clearing browser site data removes it. Saving depends on browser storage
+being available.
 
 ## Offline use
 
-The first visit requires internet access. After the app and audio
-have finished caching, it can be used offline in the same browser.
+The first visit requires an internet connection. Keep the app open until
+its service worker has finished caching the application and all 12 audio
+recordings, then reload once online. After caching, the same browser can
+load the app and play instructions offline.
 
-## Saved progress
+Offline availability depends on the browser retaining its cached files.
+Clearing site data removes both cached files and saved progress. Local
+development with `npm run dev` does not enable the production service worker.
 
-The nickname, avatar, and activity scores are stored locally
-in the current browser. Practice rounds do not replace full-round
-scores. Clearing browser data removes saved progress.
+## Run locally
 
-## Vision
+Install Node.js **24.12.0 or later**, npm, and Git. This Node.js minimum
+comes from the Quiz Engine dependency.
 
-Learn & Play helps children aged 3–5 practise shapes, colours,
-counting, and letters through short visual quizzes, independently
-or with an adult.
+```bash
+git clone https://github.com/TatevikTadevosyan86/Laboration-3-QuizApp.git
+cd Laboration-3-QuizApp
+npm ci
+npm run dev
+```
 
-The app supports one player and works offline after its first
-successful download.
+Open the address printed by Vite. Dependencies are installed from the
+committed lockfile; both student modules are obtained from GitHub.
 
-## Planned activities
+To build and preview the production version:
 
-- Shapes: match circles, squares, and triangles.
-- Colours: identify basic colours.
-- Counting: count groups of one to five objects.
-- Letters: match identical uppercase letters.
+```bash
+npm run build
+npm run preview
+```
+
+Open the printed address with `/Laboration-3-QuizApp/`, normally
+`http://localhost:4173/Laboration-3-QuizApp/`. Use the production preview
+or published site when testing offline behaviour.
+
+## Module integration
+
+### Quiz Engine — primary module
+
+[Quiz Engine repository](https://github.com/TatevikTadevosyan86/Laboration-2-QuizEngine)
+
+Installed as `quiz-engine` from the `laboration-2` tag. It provides
+`Question`, `MultipleChoiceQuestion`, `Quiz`, and `QuizSession` for answer
+checking, scoring, history, and retry quizzes. Colours uses multiple-answer
+questions; the other activities use single-answer questions.
+
+`QuestionBank` creates quiz content and stores visual metadata separately.
+`LearningApp` handles the interface and player interaction. The engine has
+no dependency on this application.
+
+### Form Validation Module — second student's module
+
+[Form Validation Module repository](https://github.com/Fielifia/1dv610-laboration-2)
+
+Installed as `laboration-2`. `PlayerNameValidator` wraps its `Field`,
+`Validation`, `MinLengthRule`, and `MaxLengthRule` classes to validate the
+optional nickname on the player setup screen. The application reads its
+validation results and displays errors; the module source is not modified.
+
+Both modules remain separate projects and are installed as dependencies.
+Do not edit their installed copies in `node_modules`.
 
 ## Requirements
 
@@ -65,23 +134,19 @@ successful download.
 | R17 | The user can return to the activity menu after a round. |
 | R18 | After initial caching, all activities and instructions work offline. |
 
-## Modules
+## Deployment
 
-### Quiz Engine
+GitHub Actions builds and publishes the application to GitHub Pages when
+the deployment workflow runs on `main`. The Vite base path is
+`/Laboration-3-QuizApp/`. The generated `dist` directory is the deployment
+artifact and should not be committed.
 
-My Quiz Engine handles questions, answer checking, scoring,
-sessions, answer history, and retry quizzes.
+## Testing
 
-https://github.com/TatevikTadevosyan86/Laboration-2-QuizEngine
+See [TEST_REPORT.md](./TEST_REPORT.md) for manual test cases and recorded
+outcomes. Each requirement below must be covered by at least one test.
+Cases marked Not run have not yet been verified in the report.
 
-### Form Validation Module
-
-The second student's module validates the optional nickname
-in the adult settings form.
-
-https://github.com/Fielifia/1dv610-laboration-2
-
-## Development status
-
-The application is under development.
-Setup and usage instructions will be added as functionality is implemented.
+`npm run build` checks production packaging; it does not replace interface,
+audio, persistence, or offline testing. The default `npm test` script is
+not an application test suite.
