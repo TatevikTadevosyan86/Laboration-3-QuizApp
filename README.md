@@ -46,17 +46,24 @@ successful download.
 
 | ID | Requirement |
 | --- | --- |
-| R1 | The user can select one of the four activities. |
-| R2 | Each activity contains a round of five questions. |
-| R3 | Each question displays large visual answer buttons. |
-| R4 | The user can hear a recorded instruction for each question. |
-| R5 | Submitting an answer displays gentle correct/incorrect feedback. |
-| R6 | The app displays progress through the round. |
-| R7 | Completing a round displays the result. |
-| R8 | The user can practise incorrectly answered questions again. |
-| R9 | The user can return to the activity menu and start another round. |
-| R10 | All activities work offline after the app has downloaded its required files. |
-| R11 | An adult can set an optional nickname, validated using the second student's module. |
+| R1 | The user can enter an optional nickname. An entered nickname must contain 2–20 characters after trimming surrounding spaces. |
+| R2 | The user can choose one of six avatars. |
+| R3 | The app restores the saved nickname and avatar in the same browser. |
+| R4 | The user can select Counting, Shapes, Colours, or Letters. |
+| R5 | Each full activity round contains five questions. |
+| R6 | Counting displays apples and accepts one number answer per question. |
+| R7 | Shapes displays a pattern and accepts one answer for the next shape. |
+| R8 | Colours allows selecting and deselecting several circles before checking the answer. |
+| R9 | Letters displays a picture and incomplete word, accepts one letter answer, and reveals the complete word after submission. |
+| R10 | Answer submission displays correct or incorrect visual feedback. |
+| R11 | Progress indicators show how many questions have been answered in the current round. |
+| R12 | The speaker button plays the instruction for the current question. |
+| R13 | Completing a round displays earned and available points. |
+| R14 | The user can practise only the questions answered incorrectly. |
+| R15 | The app saves each activity's latest full-round score, best full-round score, and number of completed full rounds. |
+| R16 | Practice rounds do not change saved full-round scores or counts. |
+| R17 | The user can return to the activity menu after a round. |
+| R18 | After initial caching, all activities and instructions work offline. |
 
 ## Modules
 
