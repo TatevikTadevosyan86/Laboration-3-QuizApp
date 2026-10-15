@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import { VitePWA } from 'vite-plugin-pwa'
 
 export default defineConfig({
+  base: '/Laboration-3-QuizApp/',
+  
   plugins: [
     VitePWA({
       registerType: 'prompt',
