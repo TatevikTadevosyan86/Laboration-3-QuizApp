@@ -20,6 +20,7 @@ export class LearningApp {
 #activity
 #isPractice = false
 #instructionPlayer = new InstructionPlayer()
+#roundQuestionCount = 0
 
   constructor(root) {
     this.#root = root;
@@ -154,6 +155,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     this.#isPractice = false
 
     const quiz = this.#questionBank.createLettersQuiz()
+    this.#roundQuestionCount = quiz.getQuestionCount()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
   }
@@ -163,6 +165,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     this.#isPractice = false
 
     const quiz = this.#questionBank.createCountingQuiz()
+    this.#roundQuestionCount = quiz.getQuestionCount()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
   }
@@ -174,6 +177,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
 
     this.#root.innerHTML = `
       <h1 id="activity-title"></h1>
+      <div id="round-progress" role="img"></div>
       <h2 id="question"></h2>
       <button type="button" id="listen" aria-label="Hear the instruction">
   🔊
@@ -186,6 +190,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
       <p id="feedback" role="status"></p>
       <button type="button" id="next" aria-label="Continue" hidden>➜</button>
     `
+    
     this.#root.querySelector('#listen').addEventListener('click', async () => {
   const fileName = this.#getInstructionFile(question)
   const played = await this.#instructionPlayer.play(fileName)
@@ -262,7 +267,31 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     this.#root.querySelector('#next').addEventListener('click', () => {
       this.#continueQuiz()
     })
+    this.#updateProgress()
   }
+  #updateProgress() {
+  const answered = this.#session.getAnswerHistory().length
+  const progress = this.#root.querySelector('#round-progress')
+
+  progress.setAttribute(
+    'aria-label',
+    `${answered} of ${this.#roundQuestionCount} questions answered`
+  )
+
+  progress.replaceChildren()
+
+  for (let index = 0; index < this.#roundQuestionCount; index += 1) {
+    const dot = document.createElement('span')
+    dot.className = 'progress-dot'
+    dot.setAttribute('aria-hidden', 'true')
+
+    if (index < answered) {
+      dot.classList.add('completed')
+    }
+
+    progress.append(dot)
+  }
+}
   #getInstructionFile(question) {
   const category = question.getCategory()
 
@@ -308,6 +337,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
 
  const question = this.#session.getCurrentQuestion()
 const correct = this.#session.submitAnswer(answerIndex)
+this.#updateProgress()
 
 if (question.getCategory() === 'Letters') {
   const data = this.#questionBank.getLetterPicture(question)
@@ -356,6 +386,7 @@ if (question.getCategory() === 'Letters') {
     this.#isPractice = false
 
     const quiz = this.#questionBank.createShapesQuiz()
+    this.#roundQuestionCount = quiz.getQuestionCount()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
   }
@@ -406,6 +437,7 @@ if (!scoreSaved) {
 
   retryButton.addEventListener('click', () => {
     this.#isPractice = true
+     this.#roundQuestionCount = retryQuiz.getQuestionCount()
     this.#session = new QuizSession(retryQuiz)
     this.#showQuestion()
   })
@@ -420,6 +452,7 @@ if (!scoreSaved) {
     this.#isPractice = false
 
     const quiz = this.#questionBank.createColoursQuiz()
+    this.#roundQuestionCount = quiz.getQuestionCount()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
   }
