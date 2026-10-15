@@ -3,6 +3,7 @@ import { QuestionBank } from './QuestionBank.js'
 import { PlayerNameValidator } from './PlayerNameValidator.js'
 import { PlayerStorage } from './PlayerStorage.js'
 import { ScoreStorage } from './ScoreStorage.js'
+import { InstructionPlayer } from './InstructionPlayer.js'
 
 export class LearningApp {
   #root
@@ -18,6 +19,7 @@ export class LearningApp {
 #scoreStorage = new ScoreStorage()
 #activity
 #isPractice = false
+#instructionPlayer = new InstructionPlayer()
 
   constructor(root) {
     this.#root = root;
@@ -165,10 +167,15 @@ this.#isPractice = false
     const question = this.#session.getCurrentQuestion()
     const category = question.getCategory()
     this.#selectedAnswers.clear()
+    this.#instructionPlayer.stop()
 
     this.#root.innerHTML = `
       <h1 id="activity-title"></h1>
       <h2 id="question"></h2>
+      <button type="button" id="listen" aria-label="Hear the instruction">
+  🔊
+</button>
+<p id="audio-message" role="status"></p>
       <button type="button" id="check" aria-label="Check selected circles" hidden disabled>✓ Check</button>
       <p id="objects" role="img"></p>
       <p id="letter-word" hidden></p>
@@ -176,6 +183,17 @@ this.#isPractice = false
       <p id="feedback" role="status"></p>
       <button type="button" id="next" aria-label="Continue" hidden>➜</button>
     `
+    this.#root.querySelector('#listen').addEventListener('click', async () => {
+  const fileName = this.#getInstructionFile(question)
+  const played = await this.#instructionPlayer.play(fileName)
+  const message = this.#root.querySelector('#audio-message')
+
+  if (message) {
+    message.textContent = played
+      ? ''
+      : 'The recording could not be played.'
+  }
+})
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
     const objects = this.#root.querySelector('#objects')
@@ -242,6 +260,19 @@ this.#isPractice = false
       this.#continueQuiz()
     })
   }
+  #getInstructionFile(question) {
+  const category = question.getCategory()
+
+  if (category === 'Letters') {
+    return this.#questionBank.getLetterPicture(question).word
+  }
+
+  if (category === 'Colours') {
+    return this.#questionBank.getColour(question).toLowerCase()
+  }
+
+  return category.toLowerCase()
+}
   #toggleColour(index, button) {
     if (this.#selectedAnswers.has(index)) {
       this.#selectedAnswers.delete(index)
@@ -325,8 +356,10 @@ this.#isPractice = false
 }
 
 #showResults() {
+  this.#instructionPlayer.stop()x
   const results = this.#session.getResults()
   let scoreSaved = true
+  
 
 if (!this.#isPractice) {
   scoreSaved = this.#scoreStorage.recordResult(
@@ -355,7 +388,7 @@ this.#root.querySelector('#activity-progress').textContent =
   progress.rounds === 0
     ? 'Complete a full round to save your progress.'
     : `⭐ Best: ${progress.best}/5 · Rounds completed: ${progress.rounds}`
-    
+
 if (!scoreSaved) {
   this.#root.querySelector('#save-message').textContent =
     'Your score could not be saved on this device.'
