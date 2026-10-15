@@ -23,7 +23,8 @@
   "homepage": "https://github.com/TatevikTadevosyan86/Laboration-3-QuizApp#readme",
   "private": true,
   "devDependencies": {
-    "vite": "^8.3.4"
+    "vite": "^8.3.4",
+    "vite-plugin-pwa": "^2.0.0"
   },
   "dependencies": {
     "laboration-2": "github:Fielifia/1dv610-laboration-2",
