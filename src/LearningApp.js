@@ -148,20 +148,23 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
   this.#startLetters()  
 })
 }
-#startLetters() {
-  const quiz = this.#questionBank.createLettersQuiz()
-  this.#session = new QuizSession(quiz)
-  this.#showQuestion()
-  this.#activity = 'Shapes'
-this.#isPractice = false
-}
+
+  #startLetters() {
+    this.#activity = 'Letters'
+    this.#isPractice = false
+
+    const quiz = this.#questionBank.createLettersQuiz()
+    this.#session = new QuizSession(quiz)
+    this.#showQuestion()
+  }
+
   #startCounting() {
+    this.#activity = 'Counting'
+    this.#isPractice = false
+
     const quiz = this.#questionBank.createCountingQuiz()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
-  
-this.#activity = 'Counting'
-this.#isPractice = false
   }
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
@@ -347,16 +350,18 @@ if (question.getCategory() === 'Letters') {
 
   this.#showQuestion()
 }
-#startShapes() {
-  const quiz = this.#questionBank.createShapesQuiz()
-  this.#session = new QuizSession(quiz)
-  this.#showQuestion()
-  this.#activity = 'Shapes'
-this.#isPractice = false
-}
+
+  #startShapes() {
+    this.#activity = 'Shapes'
+    this.#isPractice = false
+
+    const quiz = this.#questionBank.createShapesQuiz()
+    this.#session = new QuizSession(quiz)
+    this.#showQuestion()
+  }
 
 #showResults() {
-  this.#instructionPlayer.stop()x
+  this.#instructionPlayer.stop()
   const results = this.#session.getResults()
   let scoreSaved = true
   
@@ -409,13 +414,15 @@ if (!scoreSaved) {
     this.#showMenu()
   })
 }
-#startColours() {
-  const quiz = this.#questionBank.createColoursQuiz()
-  this.#session = new QuizSession(quiz)
-  this.#showQuestion()
-  this.#activity = 'Shapes'
-this.#isPractice = false
-}
+
+  #startColours() {
+    this.#activity = 'Colours'
+    this.#isPractice = false
+
+    const quiz = this.#questionBank.createColoursQuiz()
+    this.#session = new QuizSession(quiz)
+    this.#showQuestion()
+  }
 #createColourCircle(colour) {
   const circle = document.createElement('span')
   circle.className = `colour-circle colour-${colour.toLowerCase()}`
