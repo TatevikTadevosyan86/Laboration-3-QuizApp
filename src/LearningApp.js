@@ -126,24 +126,10 @@ this.#playerStorage.save(this.#player)
 <button type="button" class="activity colours" id="colours"><span class="activity-picture colour-picture" aria-hidden="true"><i></i><i></i><i></i></span><span>Colours</span></button>
 <button type="button" class="activity counting" id="counting"><span class="activity-picture" aria-hidden="true">1 2 3</span><span>Counting</span></button>
 <button type="button" class="activity letters"  id="letters"><span class="activity-picture" aria-hidden="true">A B C</span><span>Letters</span></button>
-    <section aria-labelledby="progress-heading">
-  <h2 id="progress-heading">Your progress ⭐</h2>
-  <ul id="score-summary"></ul>
-</section>
+    
 </div>
   `
-  const summary = this.#root.querySelector('#score-summary')
-
-for (const activity of ['Counting', 'Shapes', 'Colours', 'Letters']) {
-  const score = this.#scoreStorage.getActivityScore(activity)
-  const item = document.createElement('li')
-
-  item.textContent = score.rounds === 0
-    ? `${activity}: ready to explore!`
-    : `${activity}: best ${score.best}/5 · latest ${score.latest}/5 · rounds ${score.rounds}`
-
-  summary.append(item)
-}
+  
  this.#root.querySelector('#player-greeting').textContent =
   `${this.#player.avatar} Hello, ${this.#player.nickname}!`
   this.#root.querySelector('#counting').addEventListener('click', () => {
@@ -354,6 +340,7 @@ if (!this.#isPractice) {
   this.#root.innerHTML = `
     <h1>Round complete! 🌟</h1>
     <p id="result"></p>
+    <p id="activity-progress"></p>
     <p id="save-message" role="status"></p>
     <button type="button" id="retry" hidden>
       🔄 Practise again
@@ -362,6 +349,13 @@ if (!this.#isPractice) {
       🏠 Back to activities
     </button>
   `
+  const progress = this.#scoreStorage.getActivityScore(this.#activity)
+
+this.#root.querySelector('#activity-progress').textContent =
+  progress.rounds === 0
+    ? 'Complete a full round to save your progress.'
+    : `⭐ Best: ${progress.best}/5 · Rounds completed: ${progress.rounds}`
+    
 if (!scoreSaved) {
   this.#root.querySelector('#save-message').textContent =
     'Your score could not be saved on this device.'
