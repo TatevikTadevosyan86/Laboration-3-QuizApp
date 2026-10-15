@@ -1,5 +1,31 @@
 # Learn & Play
 
+
+## Play online
+
+[Open Learn & Play](https://tateviktadevosyan86.github.io/Laboration-3-QuizApp/)
+
+Enter an optional nickname, choose an avatar, and select an activity:
+
+- Counting: count apples and choose the matching number.
+- Shapes: choose the next shape in a pattern.
+- Colours: select all circles of the named colour, then press Check.
+- Letters: use a picture to choose a word’s missing first letter.
+
+Press the speaker button to hear an instruction.
+After a round, view your result or practise missed questions.
+
+## Offline use
+
+The first visit requires internet access. After the app and audio
+have finished caching, it can be used offline in the same browser.
+
+## Saved progress
+
+The nickname, avatar, and activity scores are stored locally
+in the current browser. Practice rounds do not replace full-round
+scores. Clearing browser data removes saved progress.
+
 ## Vision
 
 Learn & Play helps children aged 3–5 practise shapes, colours,
