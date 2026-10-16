@@ -95,6 +95,13 @@ start() {
     event.preventDefault()
     this.#startWithPlayer()
   })
+} 
+#startActivity(activity, quiz) {
+  this.#activity = activity
+  this.#isRetryRound = false
+  this.#roundQuestionCount = quiz.getQuestionCount()
+  this.#session = new QuizSession(quiz)
+  this.#showQuestion()
 }
 #startWithPlayer() {
   const input = this.#root.querySelector('#nickname')
@@ -151,23 +158,18 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
 }
 
   #startLetters() {
-    this.#activity = 'Letters'
-    this.#isRetryRound = false
+  
 
     const quiz = this.#questionBank.createLettersQuiz()
-    this.#roundQuestionCount = quiz.getQuestionCount()
-    this.#session = new QuizSession(quiz)
-    this.#showQuestion()
+    this.#startActivity('Letters', quiz)
+  
   }
 
   #startCounting() {
-    this.#activity = 'Counting'
-    this.#isRetryRound = false
+  
 
     const quiz = this.#questionBank.createCountingQuiz()
-    this.#roundQuestionCount = quiz.getQuestionCount()
-    this.#session = new QuizSession(quiz)
-    this.#showQuestion()
+    this.#startActivity('Counting', quiz)
   }
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
@@ -382,13 +384,12 @@ if (question.getCategory() === 'Letters') {
 }
 
   #startShapes() {
-    this.#activity = 'Shapes'
-    this.#isRetryRound= false
+
+    
 
     const quiz = this.#questionBank.createShapesQuiz()
-    this.#roundQuestionCount = quiz.getQuestionCount()
-    this.#session = new QuizSession(quiz)
-    this.#showQuestion()
+       this.#startActivity('Shapes', quiz)
+    
   }
 
 #showResults() {
@@ -448,13 +449,12 @@ if (!scoreSaved) {
 }
 
   #startColours() {
-    this.#activity = 'Colours'
-    this.#isRetryRound = false
+    
+   
 
     const quiz = this.#questionBank.createColoursQuiz()
-    this.#roundQuestionCount = quiz.getQuestionCount()
-    this.#session = new QuizSession(quiz)
-    this.#showQuestion()
+    this.#startActivity('Colours', quiz)
+  
   }
 #createColourCircle(colour) {
   const circle = document.createElement('span')
