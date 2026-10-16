@@ -1,29 +1,37 @@
 import { QuizSession } from 'quiz-engine'
-import { QuestionBank } from './QuestionBank.js'
-import { PlayerNameValidator } from './PlayerNameValidator.js'
-import { PlayerStorage } from './PlayerStorage.js'
-import { ScoreStorage } from './ScoreStorage.js'
-import { InstructionPlayer } from './InstructionPlayer.js'
 
 export class LearningApp {
   #root
-  #questionBank = new QuestionBank()
+  #questionBank
   #selectedAnswers = new Set()
   #session
-  #nameValidator = new PlayerNameValidator()
-  #playerStorage = new PlayerStorage()
+  #nameValidator
+  #playerStorage
   #player = {
     nickname: 'Little Explorer',
     avatar: '🐱',
   }
-  #scoreStorage = new ScoreStorage()
+  #scoreStorage
   #activity
   #isRetryRound = false
-  #instructionPlayer = new InstructionPlayer()
+  #instructionPlayer
   #roundQuestionCount = 0
 
-  constructor(root) {
+  constructor() {
+    ;(root,
+      {
+        questionBank,
+        nameValidator,
+        playerStorage,
+        scoreStorage,
+        instructionPlayer,
+      })
     this.#root = root
+    this.#questionBank = questionBank
+    this.#nameValidator = nameValidator
+    this.#playerStorage = playerStorage
+    this.#scoreStorage = scoreStorage
+    this.#instructionPlayer = instructionPlayer
   }
   start() {
     const savedPlayer = this.#playerStorage.load()
