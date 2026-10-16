@@ -400,17 +400,16 @@ export class LearningApp {
 
     feedback.replaceChildren(face, message)
   }
-  #revealCompletedWord(question) { 
-    
-    if (question.getCategory() === 'Letters') {
+  #revealCompletedWord(question) {
+    if (question.getCategory() !== 'Letters') {
       return
     }
-      const data = this.#questionBank.getLetterPicture(question)
-      const word = this.#root.querySelector('#letter-word')
+    const data = this.#questionBank.getLetterPicture(question)
+    const word = this.#root.querySelector('#letter-word')
 
-      word.textContent = data.word
-    }
+    word.textContent = data.word
   }
+
   #submitAnswer(answerIndex, selectedButton) {
     const buttons = this.#root.querySelectorAll('#answers button')
 
@@ -422,7 +421,7 @@ export class LearningApp {
     const correct = this.#session.submitAnswer(answerIndex)
     this.#updateProgress()
 
-   this.#revealCompletedWord(question)
+    this.#revealCompletedWord(question)
 
     this.#showAnswerFeedback(correct, selectedButton)
 
