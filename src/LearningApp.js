@@ -92,7 +92,6 @@ export class LearningApp {
     this.#startActivity('Counting', quiz)
   }
 
-  
   #bindInstructionButton(question) {
     const button = this.#root.querySelector('#listen')
     const message = this.#root.querySelector('#audio-message')
@@ -114,8 +113,6 @@ export class LearningApp {
     const button = this.#root.querySelector('#check')
     button.hidden = false
 
-    this.#root.querySelector('#answers').after(button)
-
     button.addEventListener('click', () => {
       button.disabled = true
       this.#submitAnswer([...this.#selectedAnswers], button)
@@ -134,15 +131,16 @@ export class LearningApp {
     this.#root.querySelector('#activity-title').textContent = category
 
     this.#questionView.renderContent(question)
-this.#questionView.renderAnswers(
-  question,
-  (index, button) => {
-    this.#submitAnswer(index, button)
-  },
-  (index, button) => {
-    this.#toggleColour(index, button)
-  },
-)    this.#bindInstructionButton(question)
+    this.#questionView.renderAnswers(
+      question,
+      (index, button) => {
+        this.#submitAnswer(index, button)
+      },
+      (index, button) => {
+        this.#toggleColour(index, button)
+      },
+    )
+    this.#bindInstructionButton(question)
     this.#bindCheckButton(question)
 
     this.#root.querySelector('#next').addEventListener('click', () => {
@@ -206,11 +204,7 @@ this.#questionView.renderAnswers(
   }
 
   #submitAnswer(answerIndex, selectedButton) {
-    const buttons = this.#root.querySelectorAll('#answers button')
-
-    for (const button of buttons) {
-      button.disabled = true
-    }
+    this.#questionView.disableAnswers()
 
     const question = this.#session.getCurrentQuestion()
     const correct = this.#session.submitAnswer(answerIndex)
@@ -219,9 +213,7 @@ this.#questionView.renderAnswers(
     this.#revealCompletedWord(question)
     this.#questionView.showAnswerFeedback(correct, selectedButton)
 
-    const nextButton = this.#root.querySelector('#next')
-    nextButton.hidden = false
-    nextButton.focus()
+    this.#questionView.showNextButton()
   }
 
   #continueQuiz() {
@@ -284,5 +276,4 @@ this.#questionView.renderAnswers(
     const quiz = this.#questionBank.createColoursQuiz()
     this.#startActivity('Colours', quiz)
   }
-  
 }

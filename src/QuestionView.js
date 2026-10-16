@@ -143,7 +143,7 @@ export class QuestionView {
     symbol.setAttribute('aria-hidden', 'true')
     return symbol
   }
-  renderAnswer(question, onAnswer, onToggleColour) {
+  renderAnswers(question, onAnswer, onToggleColour) {
     const category = question.getCategory()
     const answers = this.#root.querySelector('#answers')
 
@@ -176,5 +176,18 @@ export class QuestionView {
     circle.className = `colour-circle colour-${colour.toLowerCase()}`
     circle.setAttribute('aria-hidden', 'true')
     return circle
+  }
+  disableAnswers() {
+    const buttons = this.#root.querySelectorAll('#answers button')
+
+    for (const button of buttons) {
+      button.disabled = true
+    }
+  }
+
+  showNextButton() {
+    const button = this.#root.querySelector('#next')
+    button.hidden = false
+    button.focus()
   }
 }
