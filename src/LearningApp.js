@@ -224,43 +224,50 @@ export class LearningApp {
       const fileName = this.#getInstructionFile(question)
       const played = await this.#instructionPlayer.play(fileName)
 
-      if (message.isConected) {
+      if (message.isConnected) {
         message.textContent = played ? '' : 'The recording could not be played.'
       }
     })
   }
-  #bindCheckButton() {
-    const check = this.#root.querySelector('#check')
-    if (category === 'Colours') {
-      check.hidden = false
-      this.#root.querySelector('#answers').after(check)
-      check.addEventListener('click', () => {
-        check.disabled = true
-        this.#submitAnswer([...this.#selectedAnswers], check)
-      })
+  #bindCheckButton(question) {
+    if (question.getCategory() !== 'Colours') {
+      return
     }
-    this.#root.querySelector('#next').addEventListener('click', () => {
-      this.#continueQuiz()
+
+    const button = this.#root.querySelector('#check')
+    button.hidden = false
+
+    this.#root.querySelector('#answers').after(button)
+
+    button.addEventListener('click', () => {
+      button.disabled = true
+      this.#submitAnswer([...this.#selectedAnswers], button)
     })
-    this.#updateProgress()
   }
-  
+
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
     const category = question.getCategory()
+
     this.#selectedAnswers.clear()
     this.#instructionPlayer.stop()
     this.#renderQuestionLayout()
-    this.#bindInstructionButton(question)
 
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
 
     this.#renderQuestionContent(question)
     this.#renderAnswer(question)
-    this.#bindCheckButton()
+    this.#bindInstructionButton(question)
+    this.#bindCheckButton(question)
 
-    
+    this.#root.querySelector('#next').addEventListener('click', () => {
+      this.#continueQuiz()
+    })
+
+    this.#updateProgress()
+  }
+
   #renderCounting(question, container) {
     const count = this.#questionBank.getObjectCount(question)
 
