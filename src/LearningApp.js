@@ -207,6 +207,19 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
 
+    #renderCounting(question, container) {
+  const count = this.#questionBank.getObjectCount(question)
+
+  container.textContent = '🍎 '.repeat(count)
+  container.setAttribute(
+    'aria-label',
+    `${count} ${count === 1 ? 'apple' : 'apples'}`
+  )
+}
+#renderShapes(question, container) {
+  const pattern = this.#questionBank.getShapePattern(question)
+  const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
+
    this.#renderQuestionContent(question)
 
     const answers = this.#root.querySelector('#answers')
@@ -253,8 +266,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
 
     if (category === 'Counting') {
       const count = this.#questionBank.getObjectCount(question)
-      objects.textContent = '🍎 '.repeat(count)
-      objects.setAttribute('aria-label', `${count} ${count === 1 ? 'apple' : 'apples'}`)
+      this.#renderCounting(question, objects)
     } else if (category === 'Shapes') {
       const pattern = this.#questionBank.getShapePattern(question)
       const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
