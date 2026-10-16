@@ -92,35 +92,7 @@ export class LearningApp {
     this.#startActivity('Counting', quiz)
   }
 
-  #renderAnswer(question) {
-    const category = question.getCategory()
-    const answers = this.#root.querySelector('#answers')
-
-    for (const [index, option] of question.getOptions().entries()) {
-      const button = document.createElement('button')
-      button.type = 'button'
-      if (category === 'Shapes') {
-        button.append(this.#createShapeSymbol(option))
-        const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
-        button.setAttribute('aria-label', names[option])
-      } else if (category === 'Colours') {
-        button.append(this.#createColourCircle(option))
-        button.setAttribute('aria-label', option + ' circle ' + (index + 1))
-        button.setAttribute('aria-pressed', 'false')
-      } else {
-        button.textContent = option
-      }
-      button.addEventListener('click', () => {
-        if (category === 'Colours') {
-          this.#toggleColour(index, button)
-        } else {
-          this.#submitAnswer(index, button)
-        }
-      })
-      answers.append(button)
-    }
-  }
-
+  
   #bindInstructionButton(question) {
     const button = this.#root.querySelector('#listen')
     const message = this.#root.querySelector('#audio-message')
@@ -162,8 +134,15 @@ export class LearningApp {
     this.#root.querySelector('#activity-title').textContent = category
 
     this.#questionView.renderContent(question)
-    this.#renderAnswer(question)
-    this.#bindInstructionButton(question)
+this.#questionView.renderAnswers(
+  question,
+  (index, button) => {
+    this.#submitAnswer(index, button)
+  },
+  (index, button) => {
+    this.#toggleColour(index, button)
+  },
+)    this.#bindInstructionButton(question)
     this.#bindCheckButton(question)
 
     this.#root.querySelector('#next').addEventListener('click', () => {
@@ -305,10 +284,5 @@ export class LearningApp {
     const quiz = this.#questionBank.createColoursQuiz()
     this.#startActivity('Colours', quiz)
   }
-  #createColourCircle(colour) {
-    const circle = document.createElement('span')
-    circle.className = `colour-circle colour-${colour.toLowerCase()}`
-    circle.setAttribute('aria-hidden', 'true')
-    return circle
-  }
+  
 }

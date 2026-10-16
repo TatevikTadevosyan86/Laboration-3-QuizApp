@@ -143,4 +143,38 @@ export class QuestionView {
     symbol.setAttribute('aria-hidden', 'true')
     return symbol
   }
+  renderAnswer(question, onAnswer, onToggleColour) {
+    const category = question.getCategory()
+    const answers = this.#root.querySelector('#answers')
+
+    for (const [index, option] of question.getOptions().entries()) {
+      const button = document.createElement('button')
+      button.type = 'button'
+      if (category === 'Shapes') {
+        button.append(this.#createShapeSymbol(option))
+        const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
+        button.setAttribute('aria-label', names[option])
+      } else if (category === 'Colours') {
+        button.append(this.#createColourCircle(option))
+        button.setAttribute('aria-label', option + ' circle ' + (index + 1))
+        button.setAttribute('aria-pressed', 'false')
+      } else {
+        button.textContent = option
+      }
+      button.addEventListener('click', () => {
+        if (category === 'Colours') {
+          onToggleColour(index, button)
+        } else {
+          onAnswer(index, button)
+        }
+      })
+      answers.append(button)
+    }
+  }
+  #createColourCircle(colour) {
+    const circle = document.createElement('span')
+    circle.className = `colour-circle colour-${colour.toLowerCase()}`
+    circle.setAttribute('aria-hidden', 'true')
+    return circle
+  }
 }
