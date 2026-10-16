@@ -282,29 +282,7 @@ export class LearningApp {
     symbol.setAttribute('aria-hidden', 'true')
     return symbol
   }
-  #showAnswerFeedback(correct, selectedButton) {
-    selectedButton.classList.add(correct ? 'correct' : 'incorrect')
 
-    const mark = document.createElement('span')
-    mark.setAttribute('aria-hidden', 'true')
-    mark.textContent = correct ? ' ✓' : ' ✕'
-    selectedButton.append(mark)
-
-    const feedback = this.#root.querySelector('#feedback')
-
-    const face = document.createElement('span')
-    face.className = 'feedback-face'
-    face.setAttribute('aria-hidden', 'true')
-    face.textContent = correct ? '😊' : '🙁'
-
-    const message = document.createElement('span')
-    message.className = 'visually-hidden'
-    message.textContent = correct
-      ? 'Correct. Well done!'
-      : 'Incorrect. We can practise this again.'
-
-    feedback.replaceChildren(face, message)
-  }
   #revealCompletedWord(question) {
     if (question.getCategory() !== 'Letters') {
       return
@@ -327,7 +305,7 @@ export class LearningApp {
 
     this.#updateProgress()
     this.#revealCompletedWord(question)
-    this.#showAnswerFeedback(correct, selectedButton)
+    this.#questionView.showAnswerFeedback(correct, selectedButton)
 
     const nextButton = this.#root.querySelector('#next')
     nextButton.hidden = false
