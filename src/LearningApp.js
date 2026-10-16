@@ -467,7 +467,6 @@ export class LearningApp {
       )
     }
     const retryQuiz = this.#session.createRetryQuiz()
-    const hasMistakes = retryQuiz.getQuestionCount() > 0
 
     this.#renderResultsLayout()
 
@@ -485,6 +484,13 @@ export class LearningApp {
     this.#root.querySelector('#result').textContent =
       `${results.score} / ${results.maxScore}`
 
+    this.#bindRetryButton(retryQuiz)
+
+    this.#root.querySelector('#menu').addEventListener('click', () => {
+      this.#showMenu()
+    })
+  }
+  #bindRetryButton(retryQuiz) {
     const retryButton = this.#root.querySelector('#retry')
     retryButton.hidden = !hasMistakes
 
@@ -494,10 +500,13 @@ export class LearningApp {
       this.#session = new QuizSession(retryQuiz)
       this.#showQuestion()
     })
+  }
 
-    this.#root.querySelector('#menu').addEventListener('click', () => {
-      this.#showMenu()
-    })
+  #startRetryRound(quiz) {
+    this.#isRetryRound = true
+    this.#roundQuestionCount = quiz.getQuestionCount()
+    this.#session = new QuizSession(quiz)
+    this.#showQuestion()
   }
 
   #startColours() {
