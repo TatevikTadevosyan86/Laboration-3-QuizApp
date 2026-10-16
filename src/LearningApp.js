@@ -161,7 +161,7 @@ export class LearningApp {
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
 
-    this.questionView.renderContent(question)
+    this.#questionView.renderContent(question)
     this.#renderAnswer(question)
     this.#bindInstructionButton(question)
     this.#bindCheckButton(question)

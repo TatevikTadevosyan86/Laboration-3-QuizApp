@@ -1,6 +1,6 @@
 export class QuestionView {
   #root
-
+  #questionBank
   constructor(root, questionBank) {
     this.#root = root
     this.#questionBank = questionBank
