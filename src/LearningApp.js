@@ -215,22 +215,28 @@ export class LearningApp {
       <button type="button" id="next" aria-label="Continue" hidden>➜</button>
     `
   }
+
+  #bindInstructionButton(question) {
+    const button = this.#root.querySelector('#listen')
+    const message = this.#root.querySelector('#audio-message')
+
+    button.addEventListener('click', async () => {
+      const fileName = this.#getInstructionFile(question)
+      const played = await this.#instructionPlayer.play(fileName)
+
+      if (message.isConected) {
+        message.textContent = played ? '' : 'The recording could not be played.'
+      }
+    })
+  }
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
     const category = question.getCategory()
     this.#selectedAnswers.clear()
     this.#instructionPlayer.stop()
     this.#renderQuestionLayout()
+    this.#bindInstructionButton(question)
 
-    this.#root.querySelector('#listen').addEventListener('click', async () => {
-      const fileName = this.#getInstructionFile(question)
-      const played = await this.#instructionPlayer.play(fileName)
-      const message = this.#root.querySelector('#audio-message')
-
-      if (message) {
-        message.textContent = played ? '' : 'The recording could not be played.'
-      }
-    })
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
 
