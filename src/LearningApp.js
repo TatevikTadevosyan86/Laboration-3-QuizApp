@@ -20,20 +20,16 @@ export class LearningApp {
   #resultsView
   #questionView
 
-  constructor(
-    root,
-    {
-      questionBank,
-      playerSetupView,
-      playerStorage,
-      scoreStorage,
-      instructionPlayer,
-      activityMenuView,
-      resultsView,
-      questionView,
-    },
-  ) {
-    this.#root = root
+  constructor({
+    questionBank,
+    playerSetupView,
+    playerStorage,
+    scoreStorage,
+    instructionPlayer,
+    activityMenuView,
+    resultsView,
+    questionView,
+  }) {
     this.#questionBank = questionBank
     this.#playerStorage = playerStorage
     this.#scoreStorage = scoreStorage
@@ -92,20 +88,6 @@ export class LearningApp {
     this.#startActivity('Counting', quiz)
   }
 
-  #bindInstructionButton(question) {
-    const button = this.#root.querySelector('#listen')
-    const message = this.#root.querySelector('#audio-message')
-
-    button.addEventListener('click', async () => {
-      const fileName = this.#getInstructionFile(question)
-      const played = await this.#instructionPlayer.play(fileName)
-
-      if (message.isConnected) {
-        message.textContent = played ? '' : 'The recording could not be played.'
-      }
-    })
-  }
-
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
     const category = question.getCategory()
@@ -124,7 +106,10 @@ export class LearningApp {
         this.#toggleColour(index, button)
       },
     )
-    this.#bindInstructionButton(question)
+    this.#questionView.bindInstructionButton(() => {
+      const fileName = this.#getInstructionFile(question)
+      return this.#instructionPlayer.play(fileName)
+    })
     this.#questionView.bindCheckButton(question, (button) => {
       this.#submitAnswer([...this.#selectedAnswers], button)
     })

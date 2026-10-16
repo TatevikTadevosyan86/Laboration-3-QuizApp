@@ -13,7 +13,7 @@ const root = document.querySelector('#app')
 const playerSetupView = new PlayerSetupView(root, new PlayerNameValidator())
 const questionBank = new QuestionBank()
 
-const app = new LearningApp(root, {
+const app = new LearningApp({
   questionBank,
   playerSetupView,
   playerStorage: new PlayerStorage(),

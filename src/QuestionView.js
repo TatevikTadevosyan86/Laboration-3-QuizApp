@@ -232,4 +232,16 @@ export class QuestionView {
   setCheckEnabled(enabled) {
     this.#root.querySelector('#check').disabled = !enabled
   }
+  bindInstructionButton(onPlay) {
+    const button = this.#root.querySelector('#listen')
+    const message = this.#root.querySelector('#audio-message')
+
+    button.addEventListener('click', async () => {
+      const played = await onPlay()
+
+      if (message.isConnected) {
+        message.textContent = played ? '' : 'The recording could not be played.'
+      }
+    })
+  }
 }
