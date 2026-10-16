@@ -168,6 +168,35 @@ export class LearningApp {
     const quiz = this.#questionBank.createCountingQuiz()
     this.#startActivity('Counting', quiz)
   }
+
+  #renderAnswer(question) {
+    const category = question.getCategory()
+    const answers = this.#root.querySelector('#answers')
+
+    for (const [index, option] of question.getOptions().entries()) {
+      const button = document.createElement('button')
+      button.type = 'button'
+      if (category === 'Shapes') {
+        button.append(this.#createShapeSymbol(option))
+        const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
+        button.setAttribute('aria-label', names[option])
+      } else if (category === 'Colours') {
+        button.append(this.#createColourCircle(option))
+        button.setAttribute('aria-label', option + ' circle ' + (index + 1))
+        button.setAttribute('aria-pressed', 'false')
+      } else {
+        button.textContent = option
+      }
+      button.addEventListener('click', () => {
+        if (category === 'Colours') {
+          this.#toggleColour(index, button)
+        } else {
+          this.#submitAnswer(index, button)
+        }
+      })
+      answers.append(button)
+    }
+  }
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
     const category = question.getCategory()
@@ -203,35 +232,12 @@ export class LearningApp {
     this.#root.querySelector('#activity-title').textContent = category
 
     this.#renderQuestionContent(question)
+    this.#renderAnswer(question)
 
-    const answers = this.#root.querySelector('#answers')
-    for (const [index, option] of question.getOptions().entries()) {
-      const button = document.createElement('button')
-      button.type = 'button'
-      if (category === 'Shapes') {
-        button.append(this.#createShapeSymbol(option))
-        const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
-        button.setAttribute('aria-label', names[option])
-      } else if (category === 'Colours') {
-        button.append(this.#createColourCircle(option))
-        button.setAttribute('aria-label', option + ' circle ' + (index + 1))
-        button.setAttribute('aria-pressed', 'false')
-      } else {
-        button.textContent = option
-      }
-      button.addEventListener('click', () => {
-        if (category === 'Colours') {
-          this.#toggleColour(index, button)
-        } else {
-          this.#submitAnswer(index, button)
-        }
-      })
-      answers.append(button)
-    }
     const check = this.#root.querySelector('#check')
     if (category === 'Colours') {
       check.hidden = false
-      answers.after(check)
+      this.#root.querySelector('#answers').after(check)
       check.addEventListener('click', () => {
         check.disabled = true
         this.#submitAnswer([...this.#selectedAnswers], check)
