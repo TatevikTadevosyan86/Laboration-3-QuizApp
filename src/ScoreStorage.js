@@ -5,13 +5,15 @@ export class ScoreStorage {
   getActivityScore(activity) {
     const scores = this.#load()
 
-    return scores[activity] ?? {
-      latest: 0,
-      best: 0,
-      rounds: 0,
-    }
+    return (
+      scores[activity] ?? {
+        latest: 0,
+        best: 0,
+        rounds: 0,
+      }
+    )
   }
-   recordResult(activity, score) {
+  recordResult(activity, score) {
     if (
       !this.#activities.includes(activity) ||
       !Number.isInteger(score) ||
@@ -20,7 +22,7 @@ export class ScoreStorage {
     ) {
       throw new Error('Invalid activity or score.')
     }
-const scores = this.#load()
+    const scores = this.#load()
     const previous = this.getActivityScore(activity)
 
     scores[activity] = {
@@ -28,7 +30,7 @@ const scores = this.#load()
       best: Math.max(previous.best, score),
       rounds: previous.rounds + 1,
     }
- try {
+    try {
       localStorage.setItem(this.#key, JSON.stringify(scores))
       return true
     } catch {

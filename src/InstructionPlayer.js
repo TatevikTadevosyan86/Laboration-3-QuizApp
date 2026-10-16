@@ -4,9 +4,7 @@ export class InstructionPlayer {
   async play(fileName) {
     this.stop()
 
-    const audio = new Audio(
-      `${import.meta.env.BASE_URL}audio/${fileName}.wav`
-    )
+    const audio = new Audio(`${import.meta.env.BASE_URL}audio/${fileName}.wav`)
 
     this.#audio = audio
 

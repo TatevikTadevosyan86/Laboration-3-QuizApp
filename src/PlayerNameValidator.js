@@ -1,9 +1,6 @@
 import Field from 'laboration-2/src/Field.js'
 import Validation from 'laboration-2/src/Validation.js'
-import {
-  MinLengthRule,
-  MaxLengthRule,
-} from 'laboration-2/src/Rule.js'
+import { MinLengthRule, MaxLengthRule } from 'laboration-2/src/Rule.js'
 
 export class PlayerNameValidator {
   #validation = new Validation()
@@ -12,11 +9,11 @@ export class PlayerNameValidator {
     const nickname = new Field('nickname')
 
     nickname.addRule(
-      new MinLengthRule(2, 'Please enter at least 2 characters.')
+      new MinLengthRule(2, 'Please enter at least 2 characters.'),
     )
 
     nickname.addRule(
-      new MaxLengthRule(20, 'Please enter no more than 20 characters.')
+      new MaxLengthRule(20, 'Please enter no more than 20 characters.'),
     )
 
     this.#validation.addField(nickname)
@@ -29,7 +26,7 @@ export class PlayerNameValidator {
     return {
       valid: result.success,
       nickname: nickname || 'Little Explorer',
-      errors: result.errors.map(error => error.errorMessage),
+      errors: result.errors.map((error) => error.errorMessage),
     }
   }
 }

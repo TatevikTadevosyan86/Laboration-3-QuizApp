@@ -37,7 +37,7 @@ export class PlayerStorage {
         JSON.stringify({
           nickname: player.nickname,
           avatar: player.avatar,
-        })
+        }),
       )
 
       return true
