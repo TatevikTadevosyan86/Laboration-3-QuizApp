@@ -275,6 +275,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
       word.hidden = false
       word.textContent = '_' + data.word.slice(1)
     }
+  }
   #updateProgress() {
   const answered = this.#session.getAnswerHistory().length
   const progress = this.#root.querySelector('#round-progress')
