@@ -18,7 +18,7 @@ export class LearningApp {
 }
 #scoreStorage = new ScoreStorage()
 #activity
-#isPractice = false
+#isRetryRound = false
 #instructionPlayer = new InstructionPlayer()
 #roundQuestionCount = 0
 
@@ -152,7 +152,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
 
   #startLetters() {
     this.#activity = 'Letters'
-    this.#isPractice = false
+    this.#isRetryRound = false
 
     const quiz = this.#questionBank.createLettersQuiz()
     this.#roundQuestionCount = quiz.getQuestionCount()
@@ -162,7 +162,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
 
   #startCounting() {
     this.#activity = 'Counting'
-    this.#isPractice = false
+    this.#isRetryRound = false
 
     const quiz = this.#questionBank.createCountingQuiz()
     this.#roundQuestionCount = quiz.getQuestionCount()
@@ -383,7 +383,7 @@ if (question.getCategory() === 'Letters') {
 
   #startShapes() {
     this.#activity = 'Shapes'
-    this.#isPractice = false
+    this.#isRetryRound= false
 
     const quiz = this.#questionBank.createShapesQuiz()
     this.#roundQuestionCount = quiz.getQuestionCount()
