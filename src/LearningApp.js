@@ -207,44 +207,7 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
 
-    #renderCounting(question, container) {
-  const count = this.#questionBank.getObjectCount(question)
-
-  container.textContent = '🍎 '.repeat(count)
-  container.setAttribute(
-    'aria-label',
-    `${count} ${count === 1 ? 'apple' : 'apples'}`
-  )
-}
-#renderShapes(question, container) {
-  const pattern = this.#questionBank.getShapePattern(question)
-
-  const names = { '●': 'Circle',
-     '▲': 'Triangle', 
-     '■': 'Square' 
-    }
-    for (const shape of pattern) {
-    container.append(this.#createShapeSymbol(shape))
-  }
-
-  const missing = document.createElement('span')
-  missing.textContent = '?'
-  container.append(missing)
-
-  container.setAttribute(
-    'aria-label',
-    pattern.map(shape => names[shape]).join(', ') + ', what comes next?'
-  )
-}
-#renderLetters(question, container) {
-  const data = this.#questionBank.getLetterPicture(question)
-  container.textContent = data.picture
-  container.setAttribute('aria-label', data.word)
-
-  const word = this.#root.querySelector('#letter-word')
-  word.hidden = false
-  word.textContent = '_' + data.word.slice(1)
-}
+    
 
    this.#renderQuestionContent(question)
 
@@ -286,21 +249,59 @@ this.#root.querySelector('#letters').addEventListener('click', () => {
     })
     this.#updateProgress()
   }
+  #renderCounting(question, container) {
+  const count = this.#questionBank.getObjectCount(question)
+
+  container.textContent = '🍎 '.repeat(count)
+  container.setAttribute(
+    'aria-label',
+    `${count} ${count === 1 ? 'apple' : 'apples'}`
+  )
+}
+#renderShapes(question, container) {
+  const pattern = this.#questionBank.getShapePattern(question)
+
+  const names = { '●': 'Circle',
+     '▲': 'Triangle', 
+     '■': 'Square' 
+    }
+    for (const shape of pattern) {
+    container.append(this.#createShapeSymbol(shape))
+  }
+
+  const missing = document.createElement('span')
+  missing.textContent = '?'
+  container.append(missing)
+
+  container.setAttribute(
+    'aria-label',
+    pattern.map(shape => names[shape]).join(', ') + ', what comes next?'
+  )
+}
+#renderLetters(question, container) {
+  const data = this.#questionBank.getLetterPicture(question)
+  container.textContent = data.picture
+  container.setAttribute('aria-label', data.word)
+
+  const word = this.#root.querySelector('#letter-word')
+  word.hidden = false
+  word.textContent = '_' + data.word.slice(1)
+}
   #renderQuestionContent(question) {
      const category = question.getCategory()
    const objects = this.#root.querySelector('#objects')
 
     if (category === 'Counting') {
-      const count = this.#questionBank.getObjectCount(question)
+      
       this.#renderCounting(question, objects)
     } else if (category === 'Shapes') {
-      const pattern = this.#questionBank.getShapePattern(question)
+      
       this.#renderShapes(question, objects)
       
     } else if (category === 'Colours') {
       objects.hidden = true
     } else if (category === 'Letters') {
-      const data = this.#questionBank.getLetterPicture(question)
+      
       this.#renderLetters(question, objects)
      
     }
