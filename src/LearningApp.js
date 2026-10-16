@@ -126,10 +126,7 @@ export class LearningApp {
     this.#selectedAnswers.clear()
     this.#instructionPlayer.stop()
     this.#questionView.renderLayout()
-
-    this.#root.querySelector('#question').textContent = question.getText()
-    this.#root.querySelector('#activity-title').textContent = category
-
+    this.#questionView.showHeading(question)
     this.#questionView.renderContent(question)
     this.#questionView.renderAnswers(
       question,
@@ -193,16 +190,6 @@ export class LearningApp {
     return symbol
   }
 
-  #revealCompletedWord(question) {
-    if (question.getCategory() !== 'Letters') {
-      return
-    }
-    const data = this.#questionBank.getLetterPicture(question)
-    const word = this.#root.querySelector('#letter-word')
-
-    word.textContent = data.word
-  }
-
   #submitAnswer(answerIndex, selectedButton) {
     this.#questionView.disableAnswers()
 
@@ -210,7 +197,7 @@ export class LearningApp {
     const correct = this.#session.submitAnswer(answerIndex)
 
     this.#updateProgress()
-    this.#revealCompletedWord(question)
+    this.#questionView.revealCompletedWord(question)
     this.#questionView.showAnswerFeedback(correct, selectedButton)
 
     this.#questionView.showNextButton()

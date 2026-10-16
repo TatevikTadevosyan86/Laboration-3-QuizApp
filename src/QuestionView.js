@@ -118,7 +118,6 @@ export class QuestionView {
     word.textContent = '_' + data.word.slice(1)
   }
   renderContent(question) {
-    const category = question.getCategory()
     const objects = this.#root.querySelector('#objects')
 
     if (category === 'Counting') {
@@ -144,7 +143,6 @@ export class QuestionView {
     return symbol
   }
   renderAnswers(question, onAnswer, onToggleColour) {
-    const category = question.getCategory()
     const answers = this.#root.querySelector('#answers')
 
     for (const [index, option] of question.getOptions().entries()) {
@@ -189,5 +187,20 @@ export class QuestionView {
     const button = this.#root.querySelector('#next')
     button.hidden = false
     button.focus()
+  }
+  showHeading(question) {
+    this.#root.querySelector('#question').textContent = question.getText()
+
+    this.#root.querySelector('#activity-title').textContent =
+      question.getCategory()
+  }
+  revealCompletedWord(question) {
+    if (question.getCategory() !== 'Letters') {
+      return
+    }
+    const data = this.#questionBank.getLetterPicture(question)
+    const word = this.#root.querySelector('#letter-word')
+
+    word.textContent = data.word
   }
 }
