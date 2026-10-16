@@ -11,16 +11,17 @@ import { QuestionView } from './QuestionView.js'
 
 const root = document.querySelector('#app')
 const playerSetupView = new PlayerSetupView(root, new PlayerNameValidator())
+const questionBank = new QuestionBank()
 
 const app = new LearningApp(root, {
-  questionBank: new QuestionBank(),
+  questionBank,
   playerSetupView,
   playerStorage: new PlayerStorage(),
   scoreStorage: new ScoreStorage(),
   instructionPlayer: new InstructionPlayer(),
   activityMenuView: new ActivityMenuView(root),
   resultsView: new ResultsView(root),
-  questionView: new QuestionView(root),
+  questionView: new QuestionView(root, questionBank),
 })
 
 app.start()

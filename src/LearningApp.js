@@ -161,7 +161,7 @@ export class LearningApp {
     this.#root.querySelector('#question').textContent = question.getText()
     this.#root.querySelector('#activity-title').textContent = category
 
-    this.#renderQuestionContent(question)
+    this.questionView.renderContent(question)
     this.#renderAnswer(question)
     this.#bindInstructionButton(question)
     this.#bindCheckButton(question)
@@ -173,55 +173,6 @@ export class LearningApp {
     this.#updateProgress()
   }
 
-  #renderCounting(question, container) {
-    const count = this.#questionBank.getObjectCount(question)
-
-    container.textContent = '🍎 '.repeat(count)
-    container.setAttribute(
-      'aria-label',
-      `${count} ${count === 1 ? 'apple' : 'apples'}`,
-    )
-  }
-  #renderShapes(question, container) {
-    const pattern = this.#questionBank.getShapePattern(question)
-
-    const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
-    for (const shape of pattern) {
-      container.append(this.#createShapeSymbol(shape))
-    }
-
-    const missing = document.createElement('span')
-    missing.textContent = '?'
-    container.append(missing)
-
-    container.setAttribute(
-      'aria-label',
-      pattern.map((shape) => names[shape]).join(', ') + ', what comes next?',
-    )
-  }
-  #renderLetters(question, container) {
-    const data = this.#questionBank.getLetterPicture(question)
-    container.textContent = data.picture
-    container.setAttribute('aria-label', data.word)
-
-    const word = this.#root.querySelector('#letter-word')
-    word.hidden = false
-    word.textContent = '_' + data.word.slice(1)
-  }
-  #renderQuestionContent(question) {
-    const category = question.getCategory()
-    const objects = this.#root.querySelector('#objects')
-
-    if (category === 'Counting') {
-      this.#renderCounting(question, objects)
-    } else if (category === 'Shapes') {
-      this.#renderShapes(question, objects)
-    } else if (category === 'Colours') {
-      objects.hidden = true
-    } else if (category === 'Letters') {
-      this.#renderLetters(question, objects)
-    }
-  }
   #updateProgress() {
     const answered = this.#session.getAnswerHistory().length
 

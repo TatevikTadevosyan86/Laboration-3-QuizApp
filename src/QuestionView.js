@@ -1,8 +1,9 @@
 export class QuestionView {
   #root
 
-  constructor(root) {
+  constructor(root, questionBank) {
     this.#root = root
+    this.#questionBank = questionBank
   }
 
   renderLayout() {
@@ -80,5 +81,66 @@ export class QuestionView {
 
       progress.append(dot)
     }
+  }
+  #renderCounting(question, container) {
+    const count = this.#questionBank.getObjectCount(question)
+
+    container.textContent = '🍎 '.repeat(count)
+    container.setAttribute(
+      'aria-label',
+      `${count} ${count === 1 ? 'apple' : 'apples'}`,
+    )
+  }
+  #renderShapes(question, container) {
+    const pattern = this.#questionBank.getShapePattern(question)
+
+    const names = { '●': 'Circle', '▲': 'Triangle', '■': 'Square' }
+    for (const shape of pattern) {
+      container.append(this.#createShapeSymbol(shape))
+    }
+
+    const missing = document.createElement('span')
+    missing.textContent = '?'
+    container.append(missing)
+
+    container.setAttribute(
+      'aria-label',
+      pattern.map((shape) => names[shape]).join(', ') + ', what comes next?',
+    )
+  }
+  #renderLetters(question, container) {
+    const data = this.#questionBank.getLetterPicture(question)
+    container.textContent = data.picture
+    container.setAttribute('aria-label', data.word)
+
+    const word = this.#root.querySelector('#letter-word')
+    word.hidden = false
+    word.textContent = '_' + data.word.slice(1)
+  }
+  renderContent(question) {
+    const category = question.getCategory()
+    const objects = this.#root.querySelector('#objects')
+
+    if (category === 'Counting') {
+      this.#renderCounting(question, objects)
+    } else if (category === 'Shapes') {
+      this.#renderShapes(question, objects)
+    } else if (category === 'Colours') {
+      objects.hidden = true
+    } else if (category === 'Letters') {
+      this.#renderLetters(question, objects)
+    }
+  }
+  #createShapeSymbol(shape) {
+    const classes = {
+      '●': 'shape-circle',
+      '▲': 'shape-triangle',
+      '■': 'shape-square',
+    }
+    const symbol = document.createElement('span')
+    symbol.className = `shape-symbol ${classes[shape]}`
+    symbol.textContent = shape
+    symbol.setAttribute('aria-hidden', 'true')
+    return symbol
   }
 }
