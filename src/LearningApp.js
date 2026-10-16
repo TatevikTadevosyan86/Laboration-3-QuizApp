@@ -17,15 +17,16 @@ export class LearningApp {
   #instructionPlayer
   #roundQuestionCount = 0
 
-  constructor() {
-    ;(root,
-      {
-        questionBank,
-        nameValidator,
-        playerStorage,
-        scoreStorage,
-        instructionPlayer,
-      })
+  constructor(
+    root,
+    {
+      questionBank,
+      nameValidator,
+      playerStorage,
+      scoreStorage,
+      instructionPlayer,
+    },
+  ) {
     this.#root = root
     this.#questionBank = questionBank
     this.#nameValidator = nameValidator
