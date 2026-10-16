@@ -105,19 +105,6 @@ export class LearningApp {
       }
     })
   }
-  #bindCheckButton(question) {
-    if (question.getCategory() !== 'Colours') {
-      return
-    }
-
-    const button = this.#root.querySelector('#check')
-    button.hidden = false
-
-    button.addEventListener('click', () => {
-      button.disabled = true
-      this.#submitAnswer([...this.#selectedAnswers], button)
-    })
-  }
 
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
@@ -138,12 +125,13 @@ export class LearningApp {
       },
     )
     this.#bindInstructionButton(question)
-    this.#bindCheckButton(question)
-
-    this.#root.querySelector('#next').addEventListener('click', () => {
-      this.#continueQuiz()
+    this.#questionView.bindCheckButton(question, (button) => {
+      this.#submitAnswer([...this.#selectedAnswers], button)
     })
 
+    this.#questionView.bindNextButton(() => {
+      this.#continueQuiz()
+    })
     this.#updateProgress()
   }
 
@@ -199,7 +187,6 @@ export class LearningApp {
     this.#updateProgress()
     this.#questionView.revealCompletedWord(question)
     this.#questionView.showAnswerFeedback(correct, selectedButton)
-
     this.#questionView.showNextButton()
   }
 

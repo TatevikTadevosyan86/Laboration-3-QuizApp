@@ -203,4 +203,25 @@ export class QuestionView {
 
     word.textContent = data.word
   }
+  bindCheckButton(question, onCheck) {
+    if (question.getCategory() !== 'Colours') {
+      return
+    }
+
+    const button = this.#root.querySelector('#check')
+    button.hidden = false
+
+    this.#root.querySelector('#answers').after(button)
+
+    button.addEventListener('click', () => {
+      button.disabled = true
+      onCheck(button)
+    })
+  }
+
+  bindNextButton(onNext) {
+    this.#root.querySelector('#next').addEventListener('click', () => {
+      onNext()
+    })
+  }
 }
