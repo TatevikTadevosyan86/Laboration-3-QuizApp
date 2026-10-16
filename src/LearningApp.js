@@ -159,11 +159,12 @@ export class LearningApp {
     } else {
       this.#selectedAnswers.add(index)
     }
+
     const selected = this.#selectedAnswers.has(index)
-    button.classList.toggle('selected', selected)
-    button.setAttribute('aria-pressed', String(selected))
-    this.#root.querySelector('#check').disabled =
-      this.#selectedAnswers.size === 0
+    const hasSelections = this.#selectedAnswers.size > 0
+
+    this.#questionView.showColourSelection(button, selected)
+    this.#questionView.setCheckEnabled(hasSelections)
   }
   #createShapeSymbol(shape) {
     const classes = {

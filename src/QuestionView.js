@@ -224,4 +224,12 @@ export class QuestionView {
       onNext()
     })
   }
+  showColourSelection(button, selected) {
+    button.classList.toggle('selected', selected)
+    button.setAttribute('aria-pressed', String(selected))
+  }
+
+  setCheckEnabled(enabled) {
+    this.#root.querySelector('#check').disabled = !enabled
+  }
 }
