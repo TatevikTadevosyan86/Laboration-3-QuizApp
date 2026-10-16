@@ -197,12 +197,8 @@ export class LearningApp {
       answers.append(button)
     }
   }
-  #showQuestion() {
-    const question = this.#session.getCurrentQuestion()
-    const category = question.getCategory()
-    this.#selectedAnswers.clear()
-    this.#instructionPlayer.stop()
 
+  #renderQuestionLayout() {
     this.#root.innerHTML = `
       <h1 id="activity-title"></h1>
       <div id="round-progress" role="img"></div>
@@ -218,6 +214,13 @@ export class LearningApp {
       <p id="feedback" role="status"></p>
       <button type="button" id="next" aria-label="Continue" hidden>➜</button>
     `
+  }
+  #showQuestion() {
+    const question = this.#session.getCurrentQuestion()
+    const category = question.getCategory()
+    this.#selectedAnswers.clear()
+    this.#instructionPlayer.stop()
+    this.#renderQuestionLayout()
 
     this.#root.querySelector('#listen').addEventListener('click', async () => {
       const fileName = this.#getInstructionFile(question)
