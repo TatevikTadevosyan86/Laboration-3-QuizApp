@@ -229,20 +229,7 @@ export class LearningApp {
       }
     })
   }
-  #showQuestion() {
-    const question = this.#session.getCurrentQuestion()
-    const category = question.getCategory()
-    this.#selectedAnswers.clear()
-    this.#instructionPlayer.stop()
-    this.#renderQuestionLayout()
-    this.#bindInstructionButton(question)
-
-    this.#root.querySelector('#question').textContent = question.getText()
-    this.#root.querySelector('#activity-title').textContent = category
-
-    this.#renderQuestionContent(question)
-    this.#renderAnswer(question)
-
+  #bindCheckButton() {
     const check = this.#root.querySelector('#check')
     if (category === 'Colours') {
       check.hidden = false
@@ -257,6 +244,23 @@ export class LearningApp {
     })
     this.#updateProgress()
   }
+  
+  #showQuestion() {
+    const question = this.#session.getCurrentQuestion()
+    const category = question.getCategory()
+    this.#selectedAnswers.clear()
+    this.#instructionPlayer.stop()
+    this.#renderQuestionLayout()
+    this.#bindInstructionButton(question)
+
+    this.#root.querySelector('#question').textContent = question.getText()
+    this.#root.querySelector('#activity-title').textContent = category
+
+    this.#renderQuestionContent(question)
+    this.#renderAnswer(question)
+    this.#bindCheckButton()
+
+    
   #renderCounting(question, container) {
     const count = this.#questionBank.getObjectCount(question)
 
