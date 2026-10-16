@@ -26,6 +26,8 @@ export class LearningApp {
       playerStorage,
       scoreStorage,
       instructionPlayer,
+      activityMenuView,
+      resultsView,
     },
   ) {
     this.#root = root
@@ -34,6 +36,8 @@ export class LearningApp {
     this.#scoreStorage = scoreStorage
     this.#instructionPlayer = instructionPlayer
     this.#playerSetupView = playerSetupView
+    this.#activityMenuView = activityMenuView
+    this.#resultsView = resultsView
   }
   start() {
     const savedPlayer = this.#playerStorage.load()
@@ -372,6 +376,7 @@ export class LearningApp {
   }
   #showResults() {
     this.#instructionPlayer.stop()
+
     const results = this.#session.getResults()
     let scoreSaved = true
 
@@ -381,29 +386,28 @@ export class LearningApp {
         results.score,
       )
     }
-    const retryQuiz = this.#session.createRetryQuiz()
-
-    this.#renderResultsLayout()
 
     const progress = this.#scoreStorage.getActivityScore(this.#activity)
+    const retryQuiz = this.#session.createRetryQuiz()
 
-    this.#root.querySelector('#activity-progress').textContent =
-      progress.rounds === 0
-        ? 'Complete a full round to save your progress.'
-        : `⭐ Best: ${progress.best}/5 · Rounds completed: ${progress.rounds}`
-
-    if (!scoreSaved) {
-      this.#root.querySelector('#save-message').textContent =
-        'Your score could not be saved on this device.'
+    const summary = {
+      score: results.score,
+      maxScore: results.maxScore,
+      best: progress.best,
+      rounds: progress.rounds,
+      scoreSaved,
+      canRetry: retryQuiz.getQuestionCount() > 0,
     }
-    this.#root.querySelector('#result').textContent =
-      `${results.score} / ${results.maxScore}`
 
-    this.#bindRetryButton(retryQuiz)
-
-    this.#root.querySelector('#menu').addEventListener('click', () => {
-      this.#showMenu()
-    })
+    this.#resultsView.show(
+      summary,
+      () => {
+        this.#startRetryRound(retryQuiz)
+      },
+      () => {
+        this.#showMenu()
+      },
+    )
   }
   #bindRetryButton(retryQuiz) {
     const retryButton = this.#root.querySelector('#retry')

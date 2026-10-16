@@ -6,6 +6,7 @@ import { PlayerStorage } from './PlayerStorage.js'
 import { ScoreStorage } from './ScoreStorage.js'
 import { InstructionPlayer } from './InstructionPlayer.js'
 import { ActivityMenuView } from './ActivityMenuView.js'
+import { ResultsView } from './ResultsView.js'
 
 const root = document.querySelector('#app')
 const playerSetupView = new PlayerSetupView(root, new PlayerNameValidator())
@@ -17,6 +18,7 @@ const app = new LearningApp(root, {
   scoreStorage: new ScoreStorage(),
   instructionPlayer: new InstructionPlayer(),
   activityMenuView: new ActivityMenuView(root),
+  resultsView: new ResultsView(root),
 })
 
 app.start()
