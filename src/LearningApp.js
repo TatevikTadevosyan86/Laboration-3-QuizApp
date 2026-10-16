@@ -397,7 +397,7 @@ if (question.getCategory() === 'Letters') {
   let scoreSaved = true
   
 
-if (!this.#isPractice) {
+if (!this.#isRetryRound) {
   scoreSaved = this.#scoreStorage.recordResult(
     this.#activity,
     results.score
@@ -436,7 +436,7 @@ if (!scoreSaved) {
   retryButton.hidden = !hasMistakes
 
   retryButton.addEventListener('click', () => {
-    this.#isPractice = true
+    this.#isRetryRound = true
      this.#roundQuestionCount = retryQuiz.getQuestionCount()
     this.#session = new QuizSession(retryQuiz)
     this.#showQuestion()
@@ -449,7 +449,7 @@ if (!scoreSaved) {
 
   #startColours() {
     this.#activity = 'Colours'
-    this.#isPractice = false
+    this.#isRetryRound = false
 
     const quiz = this.#questionBank.createColoursQuiz()
     this.#roundQuestionCount = quiz.getQuestionCount()
