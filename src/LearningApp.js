@@ -377,25 +377,8 @@ export class LearningApp {
     symbol.setAttribute('aria-hidden', 'true')
     return symbol
   }
-  #submitAnswer(answerIndex, selectedButton) {
-    const buttons = this.#root.querySelectorAll('#answers button')
-
-    for (const button of buttons) {
-      button.disabled = true
-    }
-
-    const question = this.#session.getCurrentQuestion()
-    const correct = this.#session.submitAnswer(answerIndex)
-    this.#updateProgress()
-
-    if (question.getCategory() === 'Letters') {
-      const data = this.#questionBank.getLetterPicture(question)
-      const word = this.#root.querySelector('#letter-word')
-
-      word.textContent = data.word
-    }
-
-    selectedButton.classList.add(correct ? 'correct' : 'incorrect')
+  #showAnswerFeedback(correct, selectedButton) {{
+     selectedButton.classList.add(correct ? 'correct' : 'incorrect')
 
     const mark = document.createElement('span')
     mark.setAttribute('aria-hidden', 'true')
@@ -416,6 +399,26 @@ export class LearningApp {
       : 'Incorrect. We can practise this again.'
 
     feedback.replaceChildren(face, message)
+  }
+  #submitAnswer(answerIndex, selectedButton) {
+    const buttons = this.#root.querySelectorAll('#answers button')
+
+    for (const button of buttons) {
+      button.disabled = true
+    }
+
+    const question = this.#session.getCurrentQuestion()
+    const correct = this.#session.submitAnswer(answerIndex)
+    this.#updateProgress()
+
+    if (question.getCategory() === 'Letters') {
+      const data = this.#questionBank.getLetterPicture(question)
+      const word = this.#root.querySelector('#letter-word')
+
+      word.textContent = data.word
+    }
+
+   this.#showAnswerFeedback(correct, selectedButton)
 
     const nextButton = this.#root.querySelector('#next')
     nextButton.hidden = false
