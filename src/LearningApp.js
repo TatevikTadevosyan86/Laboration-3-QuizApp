@@ -17,6 +17,7 @@ export class LearningApp {
   #instructionPlayer
   #roundQuestionCount = 0
   #activityMenuView
+  #resultsView
 
   constructor(
     root,
@@ -360,20 +361,7 @@ export class LearningApp {
     const quiz = this.#questionBank.createShapesQuiz()
     this.#startActivity('Shapes', quiz)
   }
-  #renderResultsLayout() {
-    this.#root.innerHTML = `
-    <h1>Round complete! 🌟</h1>
-    <p id="result"></p>
-    <p id="activity-progress"></p>
-    <p id="save-message" role="status"></p>
-    <button type="button" id="retry" hidden>
-      🔄 Practise again
-    </button>
-    <button type="button" id="menu">
-      🏠 Back to activities
-    </button>
-  `
-  }
+
   #showResults() {
     this.#instructionPlayer.stop()
 
@@ -408,17 +396,6 @@ export class LearningApp {
         this.#showMenu()
       },
     )
-  }
-  #bindRetryButton(retryQuiz) {
-    const retryButton = this.#root.querySelector('#retry')
-    retryButton.hidden = !hasMistakes
-
-    retryButton.addEventListener('click', () => {
-      this.#isRetryRound = true
-      this.#roundQuestionCount = retryQuiz.getQuestionCount()
-      this.#session = new QuizSession(retryQuiz)
-      this.#showQuestion()
-    })
   }
 
   #startRetryRound(quiz) {
