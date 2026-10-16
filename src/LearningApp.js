@@ -5,7 +5,7 @@ export class LearningApp {
   #questionBank
   #selectedAnswers = new Set()
   #session
-  #nameValidator
+  #playerSetupView
   #playerStorage
   #player = {
     nickname: 'Little Explorer',
@@ -21,7 +21,7 @@ export class LearningApp {
     root,
     {
       questionBank,
-      nameValidator,
+      playerSetupView,
       playerStorage,
       scoreStorage,
       instructionPlayer,
@@ -29,10 +29,10 @@ export class LearningApp {
   ) {
     this.#root = root
     this.#questionBank = questionBank
-    this.#nameValidator = nameValidator
     this.#playerStorage = playerStorage
     this.#scoreStorage = scoreStorage
     this.#instructionPlayer = instructionPlayer
+    this.#playerSetupView = playerSetupView
   }
   start() {
     const savedPlayer = this.#playerStorage.load()
@@ -45,67 +45,11 @@ export class LearningApp {
   }
 
   #showPlayerSetup() {
-    this.#root.innerHTML = `
-    <h1>Learn & Play</h1>
-    <form id="player-form" novalidate>
-      <label for="nickname">Nickname</label>
-      <input
-        id="nickname"
-        name="nickname"
-        type="text"
-        placeholder="Little Explorer"
-        aria-describedby="name-error"
-      >
-
-      <fieldset>
-        <legend>Choose your animal</legend>
-        <div id="avatars"></div>
-      </fieldset>
-
-      <p id="name-error" role="alert"></p>
-      <button type="submit">▶ Play</button>
-    </form>
-  `
-
-    this.#root.querySelector('#nickname').value =
-      this.#player.nickname === 'Little Explorer' ? '' : this.#player.nickname
-
-    const avatars = [
-      { symbol: '🐱', name: 'Cat' },
-      { symbol: '🐶', name: 'Dog' },
-      { symbol: '🐰', name: 'Rabbit' },
-      { symbol: '🦊', name: 'Fox' },
-      { symbol: '🐼', name: 'Panda' },
-      { symbol: '🐸', name: 'Frog' },
-    ]
-
-    const container = this.#root.querySelector('#avatars')
-
-    for (const avatar of avatars) {
-      const label = document.createElement('label')
-      label.className = 'avatar-choice'
-
-      const radio = document.createElement('input')
-      radio.type = 'radio'
-      radio.name = 'avatar'
-      radio.value = avatar.symbol
-      radio.checked = avatar.symbol === this.#player.avatar
-      radio.setAttribute('aria-label', avatar.name)
-
-      const picture = document.createElement('span')
-      picture.textContent = avatar.symbol
-      picture.setAttribute('aria-hidden', 'true')
-
-      label.append(radio, picture)
-      container.append(label)
-    }
-
-    this.#root
-      .querySelector('#player-form')
-      .addEventListener('submit', (event) => {
-        event.preventDefault()
-        this.#startWithPlayer()
-      })
+    this.#playerSetupView.show(this.#player, (player) => {
+      this.#player = player
+      this.#playerStorage.save(player)
+      this.#showMenu()
+    })
   }
   #startActivity(activity, quiz) {
     this.#activity = activity
@@ -114,29 +58,7 @@ export class LearningApp {
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
   }
-  #startWithPlayer() {
-    const input = this.#root.querySelector('#nickname')
-    const result = this.#nameValidator.validate(input.value)
 
-    input.setAttribute('aria-invalid', String(!result.valid))
-
-    if (!result.valid) {
-      this.#root.querySelector('#name-error').textContent =
-        result.errors.join(' ')
-
-      input.focus()
-      return
-    }
-
-    const avatar = this.#root.querySelector('input[name="avatar"]:checked')
-
-    this.#player = {
-      nickname: result.nickname,
-      avatar: avatar.value,
-    }
-    this.#playerStorage.save(this.#player)
-    this.#showMenu()
-  }
   #showMenu() {
     this.#root.innerHTML = `
     <h1>Learn & Play</h1>

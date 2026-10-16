@@ -1,15 +1,20 @@
 import { LearningApp } from './LearningApp.js'
 import { QuestionBank } from './QuestionBank.js'
 import { PlayerNameValidator } from './PlayerNameValidator.js'
+import { PlayerSetupView } from './PlayerSetupView.js'
 import { PlayerStorage } from './PlayerStorage.js'
 import { ScoreStorage } from './ScoreStorage.js'
 import { InstructionPlayer } from './InstructionPlayer.js'
 
-const app = new LearningApp(document.querySelector('#app'), {
+const root = document.querySelector('#app')
+const playerSetupView = new PlayerSetupView(root, new PlayerNameValidator())
+
+const app = new LearningApp(root, {
   questionBank: new QuestionBank(),
-  nameValidator: new PlayerNameValidator(),
+  playerSetupView,
   playerStorage: new PlayerStorage(),
   scoreStorage: new ScoreStorage(),
   instructionPlayer: new InstructionPlayer(),
 })
+
 app.start()
