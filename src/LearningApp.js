@@ -377,8 +377,8 @@ export class LearningApp {
     symbol.setAttribute('aria-hidden', 'true')
     return symbol
   }
-  #showAnswerFeedback(correct, selectedButton) {{
-     selectedButton.classList.add(correct ? 'correct' : 'incorrect')
+  #showAnswerFeedback(correct, selectedButton) {
+    selectedButton.classList.add(correct ? 'correct' : 'incorrect')
 
     const mark = document.createElement('span')
     mark.setAttribute('aria-hidden', 'true')
@@ -418,7 +418,7 @@ export class LearningApp {
       word.textContent = data.word
     }
 
-   this.#showAnswerFeedback(correct, selectedButton)
+    this.#showAnswerFeedback(correct, selectedButton)
 
     const nextButton = this.#root.querySelector('#next')
     nextButton.hidden = false
