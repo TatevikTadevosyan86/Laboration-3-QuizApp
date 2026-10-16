@@ -59,4 +59,26 @@ export class QuestionView {
 
     feedback.replaceChildren(face, message)
   }
+  showProgress(answered, total) {
+    const progress = this.#root.querySelector('#round-progress')
+
+    progress.setAttribute(
+      'aria-label',
+      `${answered} of ${total} questions answered`,
+    )
+
+    progress.replaceChildren()
+
+    for (let index = 0; index < total; index += 1) {
+      const dot = document.createElement('span')
+      dot.className = 'progress-dot'
+      dot.setAttribute('aria-hidden', 'true')
+
+      if (index < answered) {
+        dot.classList.add('completed')
+      }
+
+      progress.append(dot)
+    }
+  }
 }

@@ -224,26 +224,8 @@ export class LearningApp {
   }
   #updateProgress() {
     const answered = this.#session.getAnswerHistory().length
-    const progress = this.#root.querySelector('#round-progress')
 
-    progress.setAttribute(
-      'aria-label',
-      `${answered} of ${this.#roundQuestionCount} questions answered`,
-    )
-
-    progress.replaceChildren()
-
-    for (let index = 0; index < this.#roundQuestionCount; index += 1) {
-      const dot = document.createElement('span')
-      dot.className = 'progress-dot'
-      dot.setAttribute('aria-hidden', 'true')
-
-      if (index < answered) {
-        dot.classList.add('completed')
-      }
-
-      progress.append(dot)
-    }
+    this.#questionView.showProgress(answered, this.#roundQuestionCount)
   }
   #getInstructionFile(question) {
     const category = question.getCategory()
