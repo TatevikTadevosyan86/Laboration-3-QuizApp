@@ -419,22 +419,21 @@ export class LearningApp {
 
     const question = this.#session.getCurrentQuestion()
     const correct = this.#session.submitAnswer(answerIndex)
+
     this.#updateProgress()
-
     this.#revealCompletedWord(question)
-
     this.#showAnswerFeedback(correct, selectedButton)
 
     const nextButton = this.#root.querySelector('#next')
     nextButton.hidden = false
     nextButton.focus()
   }
+
   #continueQuiz() {
     if (this.#session.isComplete()) {
       this.#showResults()
       return
     }
-
     this.#showQuestion()
   }
 
@@ -442,7 +441,20 @@ export class LearningApp {
     const quiz = this.#questionBank.createShapesQuiz()
     this.#startActivity('Shapes', quiz)
   }
-
+  #renderResultsLayout() {
+    this.#root.innerHTML = `
+    <h1>Round complete! 🌟</h1>
+    <p id="result"></p>
+    <p id="activity-progress"></p>
+    <p id="save-message" role="status"></p>
+    <button type="button" id="retry" hidden>
+      🔄 Practise again
+    </button>
+    <button type="button" id="menu">
+      🏠 Back to activities
+    </button>
+  `
+  }
   #showResults() {
     this.#instructionPlayer.stop()
     const results = this.#session.getResults()
@@ -457,18 +469,8 @@ export class LearningApp {
     const retryQuiz = this.#session.createRetryQuiz()
     const hasMistakes = retryQuiz.getQuestionCount() > 0
 
-    this.#root.innerHTML = `
-    <h1>Round complete! 🌟</h1>
-    <p id="result"></p>
-    <p id="activity-progress"></p>
-    <p id="save-message" role="status"></p>
-    <button type="button" id="retry" hidden>
-      🔄 Practise again
-    </button>
-    <button type="button" id="menu">
-      🏠 Back to activities
-    </button>
-  `
+    this.#renderResultsLayout()
+
     const progress = this.#scoreStorage.getActivityScore(this.#activity)
 
     this.#root.querySelector('#activity-progress').textContent =
