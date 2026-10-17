@@ -151,11 +151,11 @@ export class LearningApp {
     this.#questionView.setCheckEnabled(hasSelections)
   }
 
-  #submitAnswer(answerIndex, selectedButton) {
+  #submitAnswer(answer, selectedButton) {
     this.#questionView.disableAnswers()
 
     const question = this.#session.getCurrentQuestion()
-    const correct = this.#session.submitAnswer(answerIndex)
+    const correct = this.#session.submitAnswer(answer)
 
     this.#updateProgress()
     this.#questionView.revealCompletedWord(question)
