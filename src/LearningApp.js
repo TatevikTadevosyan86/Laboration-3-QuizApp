@@ -1,7 +1,6 @@
 import { QuizSession } from 'quiz-engine'
 
 export class LearningApp {
-  #root
   #questionBank
   #selectedAnswers = new Set()
   #session
@@ -150,18 +149,6 @@ export class LearningApp {
 
     this.#questionView.showColourSelection(button, selected)
     this.#questionView.setCheckEnabled(hasSelections)
-  }
-  #createShapeSymbol(shape) {
-    const classes = {
-      '●': 'shape-circle',
-      '▲': 'shape-triangle',
-      '■': 'shape-square',
-    }
-    const symbol = document.createElement('span')
-    symbol.className = `shape-symbol ${classes[shape]}`
-    symbol.textContent = shape
-    symbol.setAttribute('aria-hidden', 'true')
-    return symbol
   }
 
   #submitAnswer(answerIndex, selectedButton) {

@@ -84,6 +84,32 @@ Open the printed address with `/Laboration-3-QuizApp/`, normally
 `http://localhost:4173/Laboration-3-QuizApp/`. Use the production preview
 or published site when testing offline behaviour.
 
+## Application structure
+
+| Class               | Responsibility                                                                    |
+| ------------------- | --------------------------------------------------------------------------------- |
+| LearningApp         | Coordinates profiles, activity sessions, answer submission, results, and retries. |
+| PlayerSetupView     | Displays nickname and avatar selection and validation feedback.                   |
+| ActivityMenuView    | Displays the greeting and activity choices and reports the selected activity.     |
+| QuestionView        | Displays question content, answers, progress, feedback, and question controls.    |
+| ResultsView         | Displays scores and reports retry and menu button clicks.                         |
+| QuestionBank        | Creates quizzes and associates question objects with visual content.              |
+| PlayerNameValidator | Adapts the second student's validation module for optional nicknames.             |
+| PlayerStorage       | Saves and restores the browser's player profile.                                  |
+| ScoreStorage        | Saves and reads full-round score summaries.                                       |
+| InstructionPlayer   | Plays and stops local instruction recordings.                                     |
+
+`main.js` creates the application and passes its dependencies through
+constructors. Views report user actions through callbacks; `LearningApp`
+responds by updating quiz state or navigating to another screen.
+
+The Quiz Engine checks answers, calculates scores, records answer history,
+and creates retry quizzes. The application supplies the content and interface.
+
+The same `QuestionBank` instance is passed to `LearningApp` and `QuestionView`.
+Its visual metadata is associated with the question objects used by the
+engine, including questions reused in retry rounds.
+
 ## Module integration
 
 ### Quiz Engine — primary module
@@ -96,7 +122,7 @@ checking, scoring, history, and retry quizzes. Colours uses multiple-answer
 questions; the other activities use single-answer questions.
 
 `QuestionBank` creates quiz content and stores visual metadata separately.
-`LearningApp` handles the interface and player interaction. The engine has
+`LearningApp` coordinates the quiz flow, while view classes handle the interface. The engine has
 no dependency on this application.
 
 ### Form Validation Module — second student's module
@@ -144,9 +170,10 @@ artifact and should not be committed.
 ## Testing
 
 See [TEST_REPORT.md](./TEST_REPORT.md) for manual test cases and recorded
-outcomes. Each requirement below must be covered by at least one test.
+outcomes. Each requirement above must be covered by at least one test.
 Cases marked Not run have not yet been verified in the report.
 
 `npm run build` checks production packaging; it does not replace interface,
-audio, persistence, or offline testing. The default `npm test` script is
-not an application test suite.
+audio, persistence, or offline testing. Run `npm test` for the automated
+score-storage tests in `test/ScoreStorage.test.js`. These tests do not replace
+manual interface or offline checks. Run `npm run format:check` to verify formatting.
