@@ -1,6 +1,7 @@
 export class QuestionView {
   #root
   #questionBank
+
   constructor(root, questionBank) {
     this.#root = root
     this.#questionBank = questionBank
@@ -37,51 +38,29 @@ export class QuestionView {
       </button>
     `
   }
-  showAnswerFeedback(correct, selectedButton) {
-    selectedButton.classList.add(correct ? 'correct' : 'incorrect')
 
-    const mark = document.createElement('span')
-    mark.setAttribute('aria-hidden', 'true')
-    mark.textContent = correct ? ' ✓' : ' ✕'
-    selectedButton.append(mark)
+  showHeading(question) {
+    this.#root.querySelector('#question').textContent = question.getText()
 
-    const feedback = this.#root.querySelector('#feedback')
-
-    const face = document.createElement('span')
-    face.className = 'feedback-face'
-    face.setAttribute('aria-hidden', 'true')
-    face.textContent = correct ? '😊' : '🙁'
-
-    const message = document.createElement('span')
-    message.className = 'visually-hidden'
-    message.textContent = correct
-      ? 'Correct. Well done!'
-      : 'Incorrect. We can practise this again.'
-
-    feedback.replaceChildren(face, message)
+    this.#root.querySelector('#activity-title').textContent =
+      question.getCategory()
   }
-  showProgress(answered, total) {
-    const progress = this.#root.querySelector('#round-progress')
 
-    progress.setAttribute(
-      'aria-label',
-      `${answered} of ${total} questions answered`,
-    )
+  renderContent(question) {
+    const category = question.getCategory()
+    const objects = this.#root.querySelector('#objects')
 
-    progress.replaceChildren()
-
-    for (let index = 0; index < total; index += 1) {
-      const dot = document.createElement('span')
-      dot.className = 'progress-dot'
-      dot.setAttribute('aria-hidden', 'true')
-
-      if (index < answered) {
-        dot.classList.add('completed')
-      }
-
-      progress.append(dot)
+    if (category === 'Counting') {
+      this.#renderCounting(question, objects)
+    } else if (category === 'Shapes') {
+      this.#renderShapes(question, objects)
+    } else if (category === 'Colours') {
+      objects.hidden = true
+    } else if (category === 'Letters') {
+      this.#renderLetters(question, objects)
     }
   }
+
   #renderCounting(question, container) {
     const count = this.#questionBank.getObjectCount(question)
 
@@ -91,6 +70,7 @@ export class QuestionView {
       `${count} ${count === 1 ? 'apple' : 'apples'}`,
     )
   }
+
   #renderShapes(question, container) {
     const pattern = this.#questionBank.getShapePattern(question)
 
@@ -108,6 +88,7 @@ export class QuestionView {
       pattern.map((shape) => names[shape]).join(', ') + ', what comes next?',
     )
   }
+
   #renderLetters(question, container) {
     const data = this.#questionBank.getLetterPicture(question)
     container.textContent = data.picture
@@ -117,32 +98,9 @@ export class QuestionView {
     word.hidden = false
     word.textContent = '_' + data.word.slice(1)
   }
-  renderContent(question) {
-    const objects = this.#root.querySelector('#objects')
 
-    if (category === 'Counting') {
-      this.#renderCounting(question, objects)
-    } else if (category === 'Shapes') {
-      this.#renderShapes(question, objects)
-    } else if (category === 'Colours') {
-      objects.hidden = true
-    } else if (category === 'Letters') {
-      this.#renderLetters(question, objects)
-    }
-  }
-  #createShapeSymbol(shape) {
-    const classes = {
-      '●': 'shape-circle',
-      '▲': 'shape-triangle',
-      '■': 'shape-square',
-    }
-    const symbol = document.createElement('span')
-    symbol.className = `shape-symbol ${classes[shape]}`
-    symbol.textContent = shape
-    symbol.setAttribute('aria-hidden', 'true')
-    return symbol
-  }
   renderAnswers(question, onAnswer, onToggleColour) {
+    const category = question.getCategory()
     const answers = this.#root.querySelector('#answers')
 
     for (const [index, option] of question.getOptions().entries()) {
@@ -169,40 +127,40 @@ export class QuestionView {
       answers.append(button)
     }
   }
+
+  #createShapeSymbol(shape) {
+    const classes = {
+      '●': 'shape-circle',
+      '▲': 'shape-triangle',
+      '■': 'shape-square',
+    }
+    const symbol = document.createElement('span')
+    symbol.className = `shape-symbol ${classes[shape]}`
+    symbol.textContent = shape
+    symbol.setAttribute('aria-hidden', 'true')
+    return symbol
+  }
+
   #createColourCircle(colour) {
     const circle = document.createElement('span')
     circle.className = `colour-circle colour-${colour.toLowerCase()}`
     circle.setAttribute('aria-hidden', 'true')
     return circle
   }
-  disableAnswers() {
-    const buttons = this.#root.querySelectorAll('#answers button')
 
-    for (const button of buttons) {
-      button.disabled = true
-    }
+  bindInstructionButton(onPlay) {
+    const button = this.#root.querySelector('#listen')
+    const message = this.#root.querySelector('#audio-message')
+
+    button.addEventListener('click', async () => {
+      const played = await onPlay()
+
+      if (message.isConnected) {
+        message.textContent = played ? '' : 'The recording could not be played.'
+      }
+    })
   }
 
-  showNextButton() {
-    const button = this.#root.querySelector('#next')
-    button.hidden = false
-    button.focus()
-  }
-  showHeading(question) {
-    this.#root.querySelector('#question').textContent = question.getText()
-
-    this.#root.querySelector('#activity-title').textContent =
-      question.getCategory()
-  }
-  revealCompletedWord(question) {
-    if (question.getCategory() !== 'Letters') {
-      return
-    }
-    const data = this.#questionBank.getLetterPicture(question)
-    const word = this.#root.querySelector('#letter-word')
-
-    word.textContent = data.word
-  }
   bindCheckButton(question, onCheck) {
     if (question.getCategory() !== 'Colours') {
       return
@@ -224,6 +182,7 @@ export class QuestionView {
       onNext()
     })
   }
+
   showColourSelection(button, selected) {
     button.classList.toggle('selected', selected)
     button.setAttribute('aria-pressed', String(selected))
@@ -232,16 +191,74 @@ export class QuestionView {
   setCheckEnabled(enabled) {
     this.#root.querySelector('#check').disabled = !enabled
   }
-  bindInstructionButton(onPlay) {
-    const button = this.#root.querySelector('#listen')
-    const message = this.#root.querySelector('#audio-message')
 
-    button.addEventListener('click', async () => {
-      const played = await onPlay()
+  disableAnswers() {
+    const buttons = this.#root.querySelectorAll('#answers button')
 
-      if (message.isConnected) {
-        message.textContent = played ? '' : 'The recording could not be played.'
+    for (const button of buttons) {
+      button.disabled = true
+    }
+  }
+
+  revealCompletedWord(question) {
+    if (question.getCategory() !== 'Letters') {
+      return
+    }
+    const data = this.#questionBank.getLetterPicture(question)
+    const word = this.#root.querySelector('#letter-word')
+
+    word.textContent = data.word
+  }
+
+  showAnswerFeedback(correct, selectedButton) {
+    selectedButton.classList.add(correct ? 'correct' : 'incorrect')
+
+    const mark = document.createElement('span')
+    mark.setAttribute('aria-hidden', 'true')
+    mark.textContent = correct ? ' ✓' : ' ✕'
+    selectedButton.append(mark)
+
+    const face = document.createElement('span')
+    face.className = 'feedback-face'
+    face.setAttribute('aria-hidden', 'true')
+    face.textContent = correct ? '😊' : '🙁'
+
+    const message = document.createElement('span')
+    message.className = 'visually-hidden'
+    message.textContent = correct
+      ? 'Correct. Well done!'
+      : 'Incorrect. We can practise this again.'
+
+    const feedback = this.#root.querySelector('#feedback')
+    feedback.replaceChildren(face, message)
+  }
+
+  showNextButton() {
+    const button = this.#root.querySelector('#next')
+    button.hidden = false
+    button.focus()
+  }
+
+  showProgress(answered, total) {
+    const progress = this.#root.querySelector('#round-progress')
+
+    progress.setAttribute(
+      'aria-label',
+      `${answered} of ${total} questions answered`,
+    )
+
+    progress.replaceChildren()
+
+    for (let index = 0; index < total; index += 1) {
+      const dot = document.createElement('span')
+      dot.className = 'progress-dot'
+      dot.setAttribute('aria-hidden', 'true')
+
+      if (index < answered) {
+        dot.classList.add('completed')
       }
-    })
+
+      progress.append(dot)
+    }
   }
 }

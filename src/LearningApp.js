@@ -2,22 +2,24 @@ import { QuizSession } from 'quiz-engine'
 
 export class LearningApp {
   #questionBank
-  #selectedAnswers = new Set()
-  #session
   #playerSetupView
+  #activityMenuView
+  #questionView
+  #resultsView
   #playerStorage
+  #scoreStorage
+  #instructionPlayer
+
   #player = {
     nickname: 'Little Explorer',
     avatar: '🐱',
   }
-  #scoreStorage
+
+  #session
   #activity
   #isRetryRound = false
-  #instructionPlayer
   #roundQuestionCount = 0
-  #activityMenuView
-  #resultsView
-  #questionView
+  #selectedAnswers = new Set()
 
   constructor({
     questionBank,
@@ -38,6 +40,7 @@ export class LearningApp {
     this.#resultsView = resultsView
     this.#questionView = questionView
   }
+
   start() {
     const savedPlayer = this.#playerStorage.load()
 
@@ -55,13 +58,6 @@ export class LearningApp {
       this.#showMenu()
     })
   }
-  #startActivity(activity, quiz) {
-    this.#activity = activity
-    this.#isRetryRound = false
-    this.#roundQuestionCount = quiz.getQuestionCount()
-    this.#session = new QuizSession(quiz)
-    this.#showQuestion()
-  }
 
   #showMenu() {
     this.#activityMenuView.show(this.#player, (activity) => {
@@ -77,9 +73,14 @@ export class LearningApp {
     })
   }
 
-  #startLetters() {
-    const quiz = this.#questionBank.createLettersQuiz()
-    this.#startActivity('Letters', quiz)
+  #startShapes() {
+    const quiz = this.#questionBank.createShapesQuiz()
+    this.#startActivity('Shapes', quiz)
+  }
+
+  #startColours() {
+    const quiz = this.#questionBank.createColoursQuiz()
+    this.#startActivity('Colours', quiz)
   }
 
   #startCounting() {
@@ -87,9 +88,21 @@ export class LearningApp {
     this.#startActivity('Counting', quiz)
   }
 
+  #startLetters() {
+    const quiz = this.#questionBank.createLettersQuiz()
+    this.#startActivity('Letters', quiz)
+  }
+
+  #startActivity(activity, quiz) {
+    this.#activity = activity
+    this.#isRetryRound = false
+    this.#roundQuestionCount = quiz.getQuestionCount()
+    this.#session = new QuizSession(quiz)
+    this.#showQuestion()
+  }
+
   #showQuestion() {
     const question = this.#session.getCurrentQuestion()
-    const category = question.getCategory()
 
     this.#selectedAnswers.clear()
     this.#instructionPlayer.stop()
@@ -119,11 +132,6 @@ export class LearningApp {
     this.#updateProgress()
   }
 
-  #updateProgress() {
-    const answered = this.#session.getAnswerHistory().length
-
-    this.#questionView.showProgress(answered, this.#roundQuestionCount)
-  }
   #getInstructionFile(question) {
     const category = question.getCategory()
 
@@ -137,6 +145,7 @@ export class LearningApp {
 
     return category.toLowerCase()
   }
+
   #toggleColour(index, button) {
     if (this.#selectedAnswers.has(index)) {
       this.#selectedAnswers.delete(index)
@@ -163,17 +172,18 @@ export class LearningApp {
     this.#questionView.showNextButton()
   }
 
+  #updateProgress() {
+    const answered = this.#session.getAnswerHistory().length
+
+    this.#questionView.showProgress(answered, this.#roundQuestionCount)
+  }
+
   #continueQuiz() {
     if (this.#session.isComplete()) {
       this.#showResults()
       return
     }
     this.#showQuestion()
-  }
-
-  #startShapes() {
-    const quiz = this.#questionBank.createShapesQuiz()
-    this.#startActivity('Shapes', quiz)
   }
 
   #showResults() {
@@ -217,10 +227,5 @@ export class LearningApp {
     this.#roundQuestionCount = quiz.getQuestionCount()
     this.#session = new QuizSession(quiz)
     this.#showQuestion()
-  }
-
-  #startColours() {
-    const quiz = this.#questionBank.createColoursQuiz()
-    this.#startActivity('Colours', quiz)
   }
 }
