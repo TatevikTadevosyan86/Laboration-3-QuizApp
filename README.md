@@ -116,8 +116,11 @@ engine, including questions reused in retry rounds.
 
 [Quiz Engine repository](https://github.com/TatevikTadevosyan86/Laboration-2-QuizEngine)
 
-Installed as `quiz-engine` from the `laboration-2` tag. It provides
-`Question`, `MultipleChoiceQuestion`, `Quiz`, and `QuizSession` for answer
+Installed as `quiz-engine`, pinned to the L3-refactored commit
+`07f992d351ae7e42181a92731aba21923a31882e`.
+The original L2 assessment version remains available at the
+`laboration-2` tag.
+ It provides `Question`, `MultipleChoiceQuestion`, `Quiz`, and `QuizSession` for answer
 checking, scoring, history, and retry quizzes. Colours uses multiple-answer
 questions; the other activities use single-answer questions.
 

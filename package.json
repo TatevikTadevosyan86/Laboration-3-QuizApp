@@ -31,6 +31,6 @@
   },
   "dependencies": {
     "laboration-2": "github:Fielifia/1dv610-laboration-2",
-    "quiz-engine": "github:TatevikTadevosyan86/Laboration-2-QuizEngine#laboration-2"
+    "quiz-engine": "github:TatevikTadevosyan86/Laboration-2-QuizEngine#07f992d351ae7e42181a92731aba21923a31882e"
   }
 }
