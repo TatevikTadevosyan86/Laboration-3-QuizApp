@@ -174,7 +174,7 @@ artifact and should not be committed.
 
 See [TEST_REPORT.md](./TEST_REPORT.md) for manual test cases and recorded
 outcomes. Each requirement above must be covered by at least one test.
-All manual tests were reported passing by the project author on 2026-10-19, including the final interface, audio, persistence, retry, and offline checks. The detailed test report should record these final results.
+The manual tests passed during development. On 2026-10-19, I tested the application again after refactoring, and the regression checks passed. The detailed results are recorded in TEST_REPORT.md.
 
 `npm run build` checks production packaging; it does not replace interface,
 audio, persistence, or offline testing. Run `npm test` for the automated
