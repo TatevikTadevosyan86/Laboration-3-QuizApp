@@ -120,7 +120,7 @@ Installed as `quiz-engine`, pinned to the L3-refactored commit
 `07f992d351ae7e42181a92731aba21923a31882e`.
 The original L2 assessment version remains available at the
 `laboration-2` tag.
- It provides `Question`, `MultipleChoiceQuestion`, `Quiz`, and `QuizSession` for answer
+It provides `Question`, `MultipleChoiceQuestion`, `Quiz`, and `QuizSession` for answer
 checking, scoring, history, and retry quizzes. Colours uses multiple-answer
 questions; the other activities use single-answer questions.
 
@@ -174,9 +174,14 @@ artifact and should not be committed.
 
 See [TEST_REPORT.md](./TEST_REPORT.md) for manual test cases and recorded
 outcomes. Each requirement above must be covered by at least one test.
-Cases marked Not run have not yet been verified in the report.
+All manual tests were reported passing by the project author on 2026-10-19, including the final interface, audio, persistence, retry, and offline checks. The detailed test report should record these final results.
 
 `npm run build` checks production packaging; it does not replace interface,
 audio, persistence, or offline testing. Run `npm test` for the automated
 score-storage tests in `test/ScoreStorage.test.js`. These tests do not replace
 manual interface or offline checks. Run `npm run format:check` to verify formatting.
+
+Verification on 2026-10-19: the application automated test passed (1 test),
+the production build passed, and the Quiz Engine passed all 41 tests,
+ESLint, and its source formatting check. The automated checks cover a
+subset of behaviour; the manual checks cover the user interface and offline use.
